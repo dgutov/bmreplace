@@ -2,6 +2,7 @@ This is a Mozilla Firefox extension that allows you to quickly replace an
 existing bookmark with a bookmark of current page.
 
 Can be useful for reading and tracking progress in:
+
 * Series of articles
 * Webcomics
 * Serial online fiction
