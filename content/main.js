@@ -60,8 +60,8 @@ let main = {
   },
   
   setPrefs: function(toolbarId, nextItemId) {
-    PREFS_BRANCH.setCharPref(PREF_TB, toolbarId);
-    PREFS_BRANCH.setCharPref(PREF_NEXT, nextItemId);
+    PREFS_BRANCH.setCharPref(PREF_TB, toolbarId || "");
+    PREFS_BRANCH.setCharPref(PREF_NEXT, nextItemId || "");
   }
 };
 

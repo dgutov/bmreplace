@@ -63,8 +63,8 @@ function afterCustomize(e) {
 function unloadFromWindow(window) {
   if (!window) return;
   let doc = window.document;
-  let button = $(ancestor, BUTTON_ID) ||
-    $($(ancestor, "navigator-toolbox").palette, BUTTON_ID);
+  let button = $(doc, BUTTON_ID) ||
+    $($(doc, "navigator-toolbox").palette, BUTTON_ID);
   button && button.parentNode.removeChild(button);
   window.removeEventListener("aftercustomization", afterCustomize, false);
 }
