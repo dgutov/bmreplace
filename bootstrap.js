@@ -24,6 +24,7 @@ function loadIntoWindow(window) {
   let toolbox = $(doc, "navigator-toolbox");
   
   if (toolbox) { // navigator window
+    // add to palette
     let button = doc.createElement("toolbarbutton");
     button.setAttribute("id", BUTTON_ID);
     button.setAttribute("label", "Replace Bookmark");
@@ -33,6 +34,7 @@ function loadIntoWindow(window) {
     button.addEventListener("command", main.action, false);
     toolbox.palette.appendChild(button);
     
+    // move to saved toolbar position
     let {toolbarId, nextItemId} = main.getPrefs(),
         toolbar = toolbarId && $(doc, toolbarId);
     if (toolbar) {
@@ -42,6 +44,15 @@ function loadIntoWindow(window) {
                          nextItem);
     }
     window.addEventListener("aftercustomization", afterCustomize, false);
+    
+    // add hotkey
+    let replaceKey = doc.createElementNS(NS_XUL, "key");
+    replaceKey.setAttribute("id", "RB:Replace");
+    replaceKey.setAttribute("key", "D");
+    replaceKey.setAttribute("modifiers", "accel,alt");
+    replaceKey.setAttribute("oncommand", "void(0);");
+    replaceKey.addEventListener("command", main.action, true);
+    $(doc, "mainKeyset").appendChild(replaceKey);
   }
 }
 

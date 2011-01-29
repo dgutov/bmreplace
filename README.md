@@ -15,4 +15,6 @@ The new bookmark retains the folder and position of the old one.
 Some special sorting methods may be added for specific domains in the
 future.
 
+Hotkey is Ctrl+Alt+D.
+
 Icon by [Yusuke Kamiyamane](http://p.yusukekamiyamane.com).

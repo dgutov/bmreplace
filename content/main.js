@@ -9,7 +9,8 @@ const TITLE = "Replace Bookmark",
       ALREADY_BOOKMARKED = "The current page is already bookmarked.",
       SELECT_BOOKMARK = "Which bookmark do you want to replace?";
 
-const PREFS_BRANCH = Services.prefs.getBranch("extensions.bmreplace.button-position."),
+const NS_XUL = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
+      PREFS_BRANCH = Services.prefs.getBranch("extensions.bmreplace.button-position."),
       PREF_TB = "toolbar",
       PREF_NEXT = "next-item",
       BUTTON_ID = "bmreplace-button";
