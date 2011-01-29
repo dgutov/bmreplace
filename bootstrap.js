@@ -9,11 +9,19 @@ function include(addon, path) {
   Services.scriptloader.loadSubScript(addon.getResourceURI(path).spec, self);
 }
 
+function $(node, childId) {
+  if (node.getElementById) {
+    return node.getElementById(childId);
+  } else {
+    return node.querySelector("#" + childId);
+  }
+}
+
 function loadIntoWindow(window) {
   if (!window) return;
   
   let doc = window.document;
-  let toolbox = doc.getElementById("navigator-toolbox");
+  let toolbox = $(doc, "navigator-toolbox");
   
   if (toolbox) { // navigator window
     let button = doc.createElement("toolbarbutton");
@@ -26,9 +34,9 @@ function loadIntoWindow(window) {
     toolbox.palette.appendChild(button);
     
     let {toolbarId, nextItemId} = main.getPrefs(),
-        toolbar = toolbarId && doc.getElementById(toolbarId);
+        toolbar = toolbarId && $(doc, toolbarId);
     if (toolbar) {
-      let nextItem = doc.getElementById(nextItemId);
+      let nextItem = $(doc, nextItemId);
       toolbar.insertItem(BUTTON_ID, nextItem &&
                          nextItem.parentNode.id == toolbarId &&
                          nextItem);
@@ -39,7 +47,7 @@ function loadIntoWindow(window) {
 
 function afterCustomize(e) {
   let toolbox = e.target;
-  let button = toolbox.parentNode.querySelector("#" + BUTTON_ID);
+  let button = $(toolbox.parentNode, BUTTON_ID);
   let toolbarId, nextItemId;
   if (button) {
     let parent = button.parentNode,
@@ -54,8 +62,9 @@ function afterCustomize(e) {
 
 function unloadFromWindow(window) {
   if (!window) return;
-  
-  let button = window.document.getElementById(BUTTON_ID);
+  let doc = window.document;
+  let button = $(ancestor, BUTTON_ID) ||
+    $($(ancestor, "navigator-toolbox").palette, BUTTON_ID);
   button && button.parentNode.removeChild(button);
   window.removeEventListener("aftercustomization", afterCustomize, false);
 }
