@@ -3,9 +3,9 @@
 let prompts = Services.prompt;
 
 const TITLE = "Replace Bookmark",
-      URL_NOT_SUPPORTED = "Sorry, current page's URL is not supported.",
+      URL_NOT_SUPPORTED = "Sorry, the current page's URL is not supported.",
       RELATED_NOT_FOUND = "Sorry, no related bookmarks found.",
-      ALREADY_BOOKMARKED = "Sorry, current page is already bookmarked.",
+      ALREADY_BOOKMARKED = "The current page is already bookmarked.",
       SELECT_BOOKMARK = "Which bookmark do you want to replace?";
 
 let main = {
