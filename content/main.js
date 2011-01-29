@@ -9,8 +9,9 @@ const TITLE = "Replace Bookmark",
       ALREADY_BOOKMARKED = "The current page is already bookmarked.",
       SELECT_BOOKMARK = "Which bookmark do you want to replace?";
 
-const PREFS_BRANCH = Services.prefs.getBranch("extensions.bmreplace."),
-      POS_PREF_NAME = "button-position",
+const PREFS_BRANCH = Services.prefs.getBranch("extensions.bmreplace.button-position."),
+      PREF_TB = "toolbar",
+      PREF_NEXT = "next-item",
       BUTTON_ID = "bmreplace-button";
 
 let main = {
@@ -46,23 +47,21 @@ let main = {
    */
   getPrefs: function() {
     try {
-      let values = PREFS_BRANCH.getCharPref(POS_PREF_NAME).split(",");
       return {
-        toolbarId: values[0],
-        nextItemId: values[1]
+        toolbarId: PREFS_BRANCH.getCharPref(PREF_TB),
+        nextItemId: PREFS_BRANCH.getCharPref(PREF_NEXT)
       };
     } catch(e) {
-      return {
-        // TODO
+      return { // default position
+        toolbarId: "nav-bar",
+        nextItemId: "bookmarks-menu-button-container"
       };
     }
   },
   
   setPrefs: function(toolbarId, nextItemId) {
-    let value = "";
-    toolbarId && (value += toolbarId);
-    nextItemId && (value += "," + nextItemId);
-    PREFS_BRANCH.setCharPref(POS_PREF_NAME, value);
+    PREFS_BRANCH.setCharPref(PREF_TB, toolbarId);
+    PREFS_BRANCH.setCharPref(PREF_NEXT, nextItemId);
   }
 };
 
