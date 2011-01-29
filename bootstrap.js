@@ -13,24 +13,51 @@ function loadIntoWindow(window) {
   if (!window) return;
   
   let doc = window.document;
-  let addonbar = doc.getElementById("addon-bar");
- 
-  if (addonbar) {
+  let toolbox = doc.getElementById("navigator-toolbox");
+  
+  if (toolbox) { // navigator window
     let button = doc.createElement("toolbarbutton");
-    button.setAttribute("id", "bmreplace-button");
+    button.setAttribute("id", BUTTON_ID);
     button.setAttribute("label", "Replace Bookmark");
-    button.setAttribute("class", "toolbarbutton-1");
+    button.setAttribute("class", "toolbarbutton-1 chromeclass-toolbar-additional");
     button.setAttribute("tooltiptext", "Replace an existing bookmark");
     button.style.listStyleImage = "url(" + icon + ")";
     button.addEventListener("command", main.action, false);
-    addonbar.appendChild(button);
+    toolbox.palette.appendChild(button);
+    
+    let {toolbarId, nextItemId} = main.getPrefs(),
+        toolbar = toolbarId && doc.getElementById(toolbarId);
+    if (toolbar) {
+      let nextItem = doc.getElementById(nextItemId);
+      toolbar.insertItem(BUTTON_ID, nextItem &&
+                         nextItem.parentNode.id == toolbarId &&
+                         nextItem);
+    }
+    window.addEventListener("aftercustomization", afterCustomize, false);
   }
+}
+
+function afterCustomize(e) {
+  let toolbox = e.target;
+  let button = toolbox.parentNode.querySelector("#" + BUTTON_ID);
+  let toolbarId, nextItemId;
+  if (button) {
+    let parent = button.parentNode,
+        nextItem = button.nextSibling;
+    if (parent && parent.localName == "toolbar") {
+      toolbarId = parent.id;
+      nextItemId = nextItem && nextItem.id;
+    }
+  }
+  main.setPrefs(toolbarId, nextItemId);
 }
 
 function unloadFromWindow(window) {
   if (!window) return;
-  let button = window.document.getElementById("bmreplace-button");
+  
+  let button = window.document.getElementById(BUTTON_ID);
   button && button.parentNode.removeChild(button);
+  window.removeEventListener("aftercustomization", afterCustomize, false);
 }
 
 function eachWindow(callback) {
