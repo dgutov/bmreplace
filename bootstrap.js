@@ -47,12 +47,13 @@ function loadIntoWindow(window) {
     
     // add hotkey
     let replaceKey = doc.createElementNS(NS_XUL, "key");
-    replaceKey.setAttribute("id", "RB:Replace");
+    replaceKey.setAttribute("id", KEY_ID);
     replaceKey.setAttribute("key", "D");
     replaceKey.setAttribute("modifiers", "accel,alt");
     replaceKey.setAttribute("oncommand", "void(0);");
     replaceKey.addEventListener("command", main.action, true);
     $(doc, "mainKeyset").appendChild(replaceKey);
+    refreshKeyset(doc);
   }
 }
 
@@ -71,12 +72,27 @@ function afterCustomize(e) {
   main.setPrefs(toolbarId, nextItemId);
 }
 
+/*
+ * Workaround for browser not picking up changes in the keyset.
+ */
+function refreshKeyset (doc) {
+  let keyset = $(doc, "mainKeyset");
+  let parent = keyset.parentNode;
+  parent.removeChild(keyset);
+  parent.appendChild(keyset);
+}
+
 function unloadFromWindow(window) {
   if (!window) return;
+  
   let doc = window.document;
   let button = $(doc, BUTTON_ID) ||
     $($(doc, "navigator-toolbox").palette, BUTTON_ID);
   button && button.parentNode.removeChild(button);
+  let key = $(doc, KEY_ID);
+  key.parentNode.removeChild(key);
+  refreshKeyset(doc);
+  
   window.removeEventListener("aftercustomization", afterCustomize, false);
 }
 

@@ -13,7 +13,8 @@ const NS_XUL = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
       PREFS_BRANCH = Services.prefs.getBranch("extensions.bmreplace.button-position."),
       PREF_TB = "toolbar",
       PREF_NEXT = "next-item",
-      BUTTON_ID = "bmreplace-button";
+      BUTTON_ID = "bmreplace-button",
+      KEY_ID = "key_replaceBookmark";
 
 let main = {
   action: function() {
