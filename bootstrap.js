@@ -75,7 +75,7 @@ function afterCustomize(e) {
 /*
  * Workaround for browser not picking up changes in the keyset.
  */
-function refreshKeyset (doc) {
+function refreshKeyset(doc) {
   let keyset = $(doc, "mainKeyset");
   let parent = keyset.parentNode;
   parent.removeChild(keyset);
@@ -108,14 +108,14 @@ function eachWindow(callback) {
   }
 }
 
-function runOnLoad (window, callback) {
+function runOnLoad(window, callback) {
   window.addEventListener("load", function() {
     window.removeEventListener("load", arguments.callee, false);
     callback(window);
   }, false);
 }
 
-function windowWatcher (subject, topic) {
+function windowWatcher(subject, topic) {
   if (topic === "domwindowopened") {
     runOnLoad(subject, loadIntoWindow);
   }
