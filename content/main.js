@@ -14,7 +14,7 @@ const NS_XUL = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
       PREF_TB = "toolbar",
       PREF_NEXT = "next-item",
       BUTTON_ID = "bmreplace-button",
-      KEY_ID = "key_replaceBookmark";
+      KEYSET_ID = "rbm-keyset";
 
 let main = {
   action: function() {
