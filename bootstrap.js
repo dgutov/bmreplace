@@ -116,11 +116,15 @@ function startup(data, reason) AddonManager.getAddonByID(data.id, function(addon
   include(addon, "content/bookmarks.js");
   icon = addon.getResourceURI("content/icon.png").spec;
   
-  // existing windows
-  eachWindow(loadIntoWindow);
-  
-  // new windows
-  Services.ww.registerNotification(windowWatcher);
+  // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=632898
+  let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+  timer.initWithCallback({notify: function() {
+    // new windows
+    Services.ww.registerNotification(windowWatcher);
+      
+    // existing windows
+    eachWindow(loadIntoWindow);
+  }}, 0, Ci.nsITimer.TYPE_ONE_SHOT);
 });
 
 function shutdown(data, reason) {
