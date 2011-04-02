@@ -24,7 +24,7 @@ let bm = {
    */
   getRelatedBookmarks: function(url) {
     let query = hs.getNewQuery();
-    query.domain = this.DOMAIN_REGEX(url)[1];
+    query.domain = this.DOMAIN_REGEX.exec(url)[1];
     query.domainIsHost = true;
     query.onlyBookmarked = true;
     let options = hs.getNewQueryOptions();
