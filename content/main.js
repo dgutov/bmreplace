@@ -9,9 +9,10 @@ const TITLE = "Replace Bookmark",
       ALREADY_BOOKMARKED = "The current page is already bookmarked.",
       SELECT_BOOKMARK = "Which bookmark do you want to replace?";
 
-const PREFS_BRANCH = Services.prefs.getBranch("extensions.bmreplace.button-position."),
-      PREF_TB = "toolbar",
-      PREF_NEXT = "next-item",
+const PREFS_BRANCH = Services.prefs.getBranch("extensions.bmreplace."),
+      PREF_TB = "button-position.toolbar",
+      PREF_NEXT = "button-position.next-item",
+      PREF_KT_TAG = "keep-title-tag",
       BUTTON_ID = "bmreplace-button",
       KEYSET_ID = "bmreplace-keyset";
 
@@ -46,7 +47,7 @@ let main = {
   /*
    * @return {toolbarId, nextItemId}
    */
-  getPrefs: function() {
+  getToolbarPrefs: function() {
     try {
       return {
         toolbarId: PREFS_BRANCH.getCharPref(PREF_TB),
@@ -60,9 +61,17 @@ let main = {
     }
   },
   
-  setPrefs: function(toolbarId, nextItemId) {
+  setToolbarPrefs: function(toolbarId, nextItemId) {
     PREFS_BRANCH.setCharPref(PREF_TB, toolbarId || "");
     PREFS_BRANCH.setCharPref(PREF_NEXT, nextItemId || "");
+  },
+  
+  getKeepTitleTag: function() {
+    try {
+      return PREFS_BRANCH.getCharPref(PREF_KT_TAG);
+    } catch(e) {
+      return "keep-title";
+    }
   }
 };
 

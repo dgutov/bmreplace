@@ -35,7 +35,7 @@ function loadIntoWindow(window) {
     toolbox.palette.appendChild(button);
     
     // move to saved toolbar position
-    let {toolbarId, nextItemId} = main.getPrefs(),
+    let {toolbarId, nextItemId} = main.getToolbarPrefs(),
         toolbar = toolbarId && $(doc, toolbarId);
     if (toolbar) {
       let nextItem = $(doc, nextItemId);
@@ -70,7 +70,7 @@ function afterCustomize(e) {
       nextItemId = nextItem && nextItem.id;
     }
   }
-  main.setPrefs(toolbarId, nextItemId);
+  main.setToolbarPrefs(toolbarId, nextItemId);
 }
 
 function unloadFromWindow(window) {

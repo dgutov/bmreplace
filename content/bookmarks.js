@@ -4,6 +4,8 @@ let bms = Cc["@mozilla.org/browser/nav-bookmarks-service;1"]
   .getService(Ci.nsINavBookmarksService);
 let hs = Cc["@mozilla.org/browser/nav-history-service;1"]
   .getService(Ci.nsINavHistoryService);
+var ts = Cc["@mozilla.org/browser/tagging-service;1"]
+  .getService(Ci.nsITaggingService);
 let ios = Services.io;
 
 let bm = {
@@ -54,7 +56,9 @@ let bm = {
   
   /*
    * Replaces the old bookmark with a new one with given URL.
-   * Retains the folder and the bookmark's position in it.
+   * Retains the folder, bookmark's position in it, and
+   * moves the tags from the old URI to the new one.
+   * If the old URI was tagged with "keep title", keeps the old title.
    * @param id old bookmark ID.
    * @param url URL string for the new bookmark.
    * @return New bookmark ID.
@@ -62,7 +66,15 @@ let bm = {
   replaceBookmark: function(id, url, title) {
     let idx = bms.getItemIndex(id);
     let folder = bms.getFolderIdForItem(id);
+    let oldUri = bms.getBookmarkURI(id);
+    let tags = ts.getTagsForURI(oldUri, {});
+    if (tags.indexOf(main.getKeepTitleTag()) != -1) {
+      title = bms.getItemTitle(id);
+    }
+    let uri = ios.newURI(url, null, null);
+    ts.tagURI(uri, tags);
+    ts.untagURI(oldUri, tags);
     bms.removeItem(id);
-    return bms.insertBookmark(folder, ios.newURI(url, null, null), idx, title);
+    return bms.insertBookmark(folder, uri, idx, title);
   }
 };
