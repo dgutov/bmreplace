@@ -3,12 +3,6 @@
 let prompts = Services.prompt;
 let prefs = Services.prefs;
 
-const TITLE = "Replace Bookmark",
-      URL_NOT_SUPPORTED = "Sorry, the current page's URL is not supported.",
-      RELATED_NOT_FOUND = "Sorry, no related bookmarks found.",
-      ALREADY_BOOKMARKED = "The current page is already bookmarked.",
-      SELECT_BOOKMARK = "Which bookmark do you want to replace?";
-
 const PREFS_BRANCH = Services.prefs.getBranch("extensions.bmreplace."),
       PREF_TB = "button-position.toolbar",
       PREF_NEXT = "button-position.next-item",
@@ -21,22 +15,23 @@ let main = {
     let window = Services.wm.getMostRecentWindow("navigator:browser");
     let doc = window.content.document;
     let url = doc.location.toString();
+    let title = _("label");
     if (!bm.DOMAIN_REGEX.test(url)) {
-      prompts.alert(window, TITLE, URL_NOT_SUPPORTED);
+      prompts.alert(window, title, _("urlNotSupported"));
       return;
     }
     if (bm.isBookmarked(url)) {
-      prompts.alert(window, TITLE, ALREADY_BOOKMARKED);
+      prompts.alert(window, title, _("alreadyBookmarked"));
       return;
     }
     let bookmarks = bm.getRelatedBookmarks(url);
     if (!bookmarks.length) {
-      prompts.alert(window, TITLE, RELATED_NOT_FOUND);
+      prompts.alert(window, title, _("relatedNotFound"));
       return;
     }
     let titles = [b.title for each (b in bookmarks)];
     let selected = {};
-    let ok = prompts.select(window, TITLE, SELECT_BOOKMARK, titles.length,
+    let ok = prompts.select(window, title, _("selectBookmark"), titles.length,
                             titles, selected);
     if (ok) {
       let bookmark = bookmarks[selected.value];

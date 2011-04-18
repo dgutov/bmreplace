@@ -27,9 +27,9 @@ function loadIntoWindow(window) {
     // add to palette
     let button = doc.createElement("toolbarbutton");
     button.setAttribute("id", BUTTON_ID);
-    button.setAttribute("label", "Replace Bookmark");
+    button.setAttribute("label", _("label"));
     button.setAttribute("class", "toolbarbutton-1 chromeclass-toolbar-additional");
-    button.setAttribute("tooltiptext", "Replace an existing bookmark");
+    button.setAttribute("tooltiptext", _("tooltip"));
     button.style.listStyleImage = "url(" + icon + ")";
     button.addEventListener("command", main.action, false);
     toolbox.palette.appendChild(button);
@@ -84,6 +84,7 @@ function unloadFromWindow(window) {
   keyset.parentNode.removeChild(keyset);
   
   window.removeEventListener("aftercustomization", afterCustomize, false);
+  l10n.unload();
 }
 
 function eachWindow(callback) {
@@ -114,7 +115,10 @@ function windowWatcher(subject, topic) {
 function startup(data, reason) AddonManager.getAddonByID(data.id, function(addon) {
   include(addon, "content/main.js");
   include(addon, "content/bookmarks.js");
+  include(addon, "includes/l10n.js");
   icon = addon.getResourceURI("content/icon.png").spec;
+  
+  l10n(addon, "bmr.properties");
   
   // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=632898
   let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
