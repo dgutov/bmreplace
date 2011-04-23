@@ -12,10 +12,10 @@ const PREFS_BRANCH = Services.prefs.getBranch("extensions.bmreplace."),
 
 let main = {
   action: function() {
-    let window = Services.wm.getMostRecentWindow("navigator:browser");
-    let doc = window.content.document;
-    let url = doc.location.toString();
-    let title = _("label");
+    let window = Services.wm.getMostRecentWindow("navigator:browser"),
+        doc = window.content.document,
+        url = doc.location.toString(),
+        title = _("label");
     if (!bm.DOMAIN_REGEX.test(url)) {
       prompts.alert(window, title, _("urlNotSupported"));
       return;
@@ -29,9 +29,9 @@ let main = {
       prompts.alert(window, title, _("relatedNotFound"));
       return;
     }
-    let titles = [b.title for each (b in bookmarks)];
-    let selected = {};
-    let ok = prompts.select(window, title, _("selectBookmark"), titles.length,
+    let titles = [b.title for each (b in bookmarks)],
+        selected = {},
+        ok = prompts.select(window, title, _("selectBookmark"), titles.length,
                             titles, selected);
     if (ok) {
       let bookmark = bookmarks[selected.value];

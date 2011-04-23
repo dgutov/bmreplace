@@ -64,10 +64,10 @@ let bm = {
    * @return New bookmark ID.
    */
   replaceBookmark: function(id, url, title) {
-    let idx = bms.getItemIndex(id);
-    let folder = bms.getFolderIdForItem(id);
-    let oldUri = bms.getBookmarkURI(id);
-    let tags = ts.getTagsForURI(oldUri, {});
+    let idx = bms.getItemIndex(id),
+        folder = bms.getFolderIdForItem(id),
+        oldUri = bms.getBookmarkURI(id),
+        tags = ts.getTagsForURI(oldUri, {});
     if (tags.indexOf(main.getKeepTitleTag()) != -1) {
       title = bms.getItemTitle(id);
     }
