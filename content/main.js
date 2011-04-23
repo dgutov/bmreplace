@@ -26,7 +26,13 @@ let main = {
     }
     let bookmarks = bm.getRelatedBookmarks(url);
     if (!bookmarks.length) {
-      prompts.alert(window, title, _("relatedNotFound"));
+      let btn = prompts.confirmEx(window, title, _("relatedNotFound"),
+                                  prompts.STD_YES_NO_BUTTONS +
+                                  prompts.BUTTON_POS_1_DEFAULT,
+                                  "", "", null, null, {});
+      if (btn == 0) {
+        bm.showAddBookmark(url, doc.title);
+      }
       return;
     }
     let titles = [b.title for each (b in bookmarks)],

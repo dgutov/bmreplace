@@ -1,5 +1,7 @@
 "use strict";
 
+Cu.import("resource://gre/modules/PlacesUIUtils.jsm");
+
 let bms = Cc["@mozilla.org/browser/nav-bookmarks-service;1"]
   .getService(Ci.nsINavBookmarksService);
 let hs = Cc["@mozilla.org/browser/nav-history-service;1"]
@@ -76,5 +78,13 @@ let bm = {
     ts.untagURI(oldUri, tags);
     bms.removeItem(id);
     return bms.insertBookmark(folder, uri, idx, title);
+  },
+  
+  /*
+   * Shows Places "Add Bookmark" dialog.
+   */
+  showAddBookmark: function(url, title) {
+    let uri = ios.newURI(url, null, null);
+    PlacesUIUtils.showMinimalAddBookmarkUI(uri, title);
   }
 };
