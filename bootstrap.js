@@ -20,57 +20,31 @@ function $(node, childId) {
 function loadIntoWindow(window) {
   if (!window) return;
   
-  let doc = window.document;
-  let toolbox = $(doc, "navigator-toolbox");
+  let doc = window.document,
+      win = doc.querySelector("window");
   
-  if (toolbox) { // navigator window
-    // add to palette
-    let button = doc.createElement("toolbarbutton");
-    button.setAttribute("id", BUTTON_ID);
-    button.setAttribute("label", _("label"));
-    button.setAttribute("class", "toolbarbutton-1 chromeclass-toolbar-additional");
-    button.setAttribute("tooltiptext", _("tooltip"));
-    button.style.listStyleImage = "url(" + icon + ")";
-    button.addEventListener("command", main.action, false);
-    toolbox.palette.appendChild(button);
-    
-    // move to saved toolbar position
-    let {toolbarId, nextItemId} = main.getToolbarPrefs(),
-        toolbar = toolbarId && $(doc, toolbarId);
-    if (toolbar) {
-      let nextItem = $(doc, nextItemId);
-      toolbar.insertItem(BUTTON_ID, nextItem &&
-                         nextItem.parentNode.id == toolbarId &&
-                         nextItem);
-    }
-    window.addEventListener("aftercustomization", afterCustomize, false);
-    
-    // add hotkey
-    let keyset = doc.createElement("keyset");
-    keyset.setAttribute("id", KEYSET_ID);
-    let replaceKey = doc.createElement("key");
-    replaceKey.setAttribute("key", "D");
-    replaceKey.setAttribute("modifiers", "accel,alt");
-    replaceKey.setAttribute("oncommand", "void(0);");
-    replaceKey.addEventListener("command", main.action, true);
-    keyset.appendChild(replaceKey);
-    doc.querySelector("window").appendChild(keyset);
-  }
-}
-
-function afterCustomize(e) {
-  let toolbox = e.target;
-  let button = $(toolbox.parentNode, BUTTON_ID);
-  let toolbarId, nextItemId;
-  if (button) {
-    let parent = button.parentNode,
-        nextItem = button.nextSibling;
-    if (parent && parent.localName == "toolbar") {
-      toolbarId = parent.id;
-      nextItemId = nextItem && nextItem.id;
-    }
-  }
-  main.setToolbarPrefs(toolbarId, nextItemId);
+  if (win.id != "main-window") return;
+  
+  // add button
+  let button = doc.createElement("toolbarbutton");
+  button.setAttribute("id", BUTTON_ID);
+  button.setAttribute("label", _("label"));
+  button.setAttribute("class", "toolbarbutton-1 chromeclass-toolbar-additional");
+  button.setAttribute("tooltiptext", _("tooltip"));
+  button.style.listStyleImage = "url(" + icon + ")";
+  button.addEventListener("command", main.action, false);
+  restorePosition(doc, button);
+  
+  // add hotkey
+  let keyset = doc.createElement("keyset");
+  keyset.setAttribute("id", KEYSET_ID);
+  let replaceKey = doc.createElement("key");
+  replaceKey.setAttribute("key", "D");
+  replaceKey.setAttribute("modifiers", "accel,alt");
+  replaceKey.setAttribute("oncommand", "void(0);");
+  replaceKey.addEventListener("command", main.action, true);
+  keyset.appendChild(replaceKey);
+  win.appendChild(keyset);
 }
 
 function unloadFromWindow(window) {
@@ -83,7 +57,6 @@ function unloadFromWindow(window) {
   let keyset = $(doc, KEYSET_ID);
   keyset.parentNode.removeChild(keyset);
   
-  window.removeEventListener("aftercustomization", afterCustomize, false);
   l10n.unload();
 }
 
@@ -116,9 +89,18 @@ function startup(data, reason) AddonManager.getAddonByID(data.id, function(addon
   include(addon, "content/main.js");
   include(addon, "content/bookmarks.js");
   include(addon, "includes/l10n.js");
+  include(addon, "includes/buttons.js");
   icon = addon.getResourceURI("content/icon.png").spec;
   
   l10n(addon, "bmr.properties");
+  
+  if (ADDON_INSTALL == reason) {
+    setDefaultPosition(BUTTON_ID, "nav-bar", "bookmarks-menu-button-container");
+  };
+  
+  if (ADDON_UPGRADE == reason) {
+    upgrade(addon, data.version);
+  }
   
   // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=632898
   let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
@@ -134,4 +116,15 @@ function startup(data, reason) AddonManager.getAddonByID(data.id, function(addon
 function shutdown(data, reason) {
   Services.ww.unregisterNotification(windowWatcher);
   eachWindow(unloadFromWindow);
+}
+
+function upgrade(version) {
+  let lastVersion = main.getLastVersion();
+  
+  if (lastVersion < "1.2") {
+    Services.prefs.getBranch("extensions.bmreplace.button-position.")
+      .deleteBranch("");
+  }
+  
+  main.setLastVersion(version);
 }
