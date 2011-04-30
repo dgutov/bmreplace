@@ -5,9 +5,15 @@ Cu.import("resource://gre/modules/AddonManager.jsm");
 
 var self = this, icon;
 
-function include(addon, path) {
+function include(path) {
   Services.scriptloader.loadSubScript(addon.getResourceURI(path).spec, self);
 }
+
+var addon = {
+  getResourceURI: function(filePath) ({
+    spec: __SCRIPT_URI_SPEC__ + "/../" + filePath
+  })
+};
 
 function $(node, childId) {
   if (node.getElementById) {
@@ -85,11 +91,11 @@ function windowWatcher(subject, topic) {
   }
 }
 
-function startup(data, reason) AddonManager.getAddonByID(data.id, function(addon) {
-  include(addon, "content/main.js");
-  include(addon, "content/bookmarks.js");
-  include(addon, "includes/l10n.js");
-  include(addon, "includes/buttons.js");
+function startup(data, reason) {
+  include("content/main.js");
+  include("content/bookmarks.js");
+  include("includes/l10n.js");
+  include("includes/buttons.js");
   icon = addon.getResourceURI("content/icon.png").spec;
   
   l10n(addon, "bmr.properties");
@@ -99,19 +105,15 @@ function startup(data, reason) AddonManager.getAddonByID(data.id, function(addon
   };
   
   if (ADDON_UPGRADE == reason) {
-    upgrade(addon, data.version);
+    upgrade(data.version);
   }
   
-  // workaround for https://bugzilla.mozilla.org/show_bug.cgi?id=632898
-  let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
-  timer.initWithCallback({notify: function() {
-    // new windows
-    Services.ww.registerNotification(windowWatcher);
+  // new windows
+  Services.ww.registerNotification(windowWatcher);
       
-    // existing windows
-    eachWindow(loadIntoWindow);
-  }}, 0, Ci.nsITimer.TYPE_ONE_SHOT);
-});
+  // existing windows
+  eachWindow(loadIntoWindow);
+};
 
 function shutdown(data, reason) {
   Services.ww.unregisterNotification(windowWatcher);
