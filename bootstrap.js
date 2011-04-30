@@ -23,13 +23,11 @@ function $(node, childId) {
   }
 }
 
-function loadIntoWindow(window) {
+function modify(window) {
   if (!window) return;
   
   let doc = window.document,
       win = doc.querySelector("window");
-  
-  if (win.id != "main-window") return;
   
   // add button
   let button = doc.createElement("toolbarbutton");
@@ -51,54 +49,23 @@ function loadIntoWindow(window) {
   replaceKey.addEventListener("command", main.action, true);
   keyset.appendChild(replaceKey);
   win.appendChild(keyset);
-}
-
-function unloadFromWindow(window) {
-  if (!window) return;
   
-  let doc = window.document;
-  let button = $(doc, BUTTON_ID) ||
-    $($(doc, "navigator-toolbox").palette, BUTTON_ID);
-  button && button.parentNode.removeChild(button);
-  let keyset = $(doc, KEYSET_ID);
-  keyset.parentNode.removeChild(keyset);
-  
-  l10n.unload();
-}
-
-function eachWindow(callback) {
-  let enumerator = Services.wm.getEnumerator("navigator:browser");
-  while (enumerator.hasMoreElements()) {
-    let win = enumerator.getNext();
-    if (win.document.readyState === "complete") {
-      callback(win);
-    } else {
-      runOnLoad(win, callback);
-    }
-  }
-}
-
-function runOnLoad(window, callback) {
-  window.addEventListener("load", function() {
-    window.removeEventListener("load", arguments.callee, false);
-    callback(window);
-  }, false);
-}
-
-function windowWatcher(subject, topic) {
-  if (topic === "domwindowopened") {
-    runOnLoad(subject, loadIntoWindow);
-  }
+  unload(function() {
+    button.parentNode.removeChild(button);
+    keyset.parentNode.removeChild(keyset);
+  }, window);
 }
 
 function startup(data, reason) {
   include("content/main.js");
   include("content/bookmarks.js");
+  include("includes/utils.js");
   include("includes/l10n.js");
   include("includes/buttons.js");
   icon = addon.getResourceURI("content/icon.png").spec;
   
   l10n(addon, "bmr.properties");
+  unload(l10n.unload);
   
   if (ADDON_INSTALL == reason) {
     setDefaultPosition(BUTTON_ID, "nav-bar", "bookmarks-menu-button-container");
@@ -108,17 +75,10 @@ function startup(data, reason) {
     upgrade(data.version);
   }
   
-  // new windows
-  Services.ww.registerNotification(windowWatcher);
-      
-  // existing windows
-  eachWindow(loadIntoWindow);
+  watchWindows(modify, "navigator:browser");
 };
 
-function shutdown(data, reason) {
-  Services.ww.unregisterNotification(windowWatcher);
-  eachWindow(unloadFromWindow);
-}
+function shutdown(data, reason) unload();
 
 function upgrade(version) {
   let lastVersion = main.getLastVersion();
