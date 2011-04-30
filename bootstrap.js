@@ -84,8 +84,7 @@ function upgrade(version) {
   let lastVersion = main.getLastVersion();
   
   if (lastVersion < "1.2") {
-    Services.prefs.getBranch("extensions.bmreplace.button-position.")
-      .deleteBranch("");
+    Services.prefs.deleteBranch("extensions.bmreplace.button-position.");
   }
   
   main.setLastVersion(version);
