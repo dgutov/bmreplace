@@ -81,10 +81,30 @@ function startup(data, reason) {
 function shutdown(data, reason) unload();
 
 function upgrade(version) {
-  let lastVersion = main.getLastVersion();
+  let lastVersion = main.getLastVersion(),
+      prefs = Services.prefs;
   
   if (lastVersion < "1.2") {
-    Services.prefs.deleteBranch("extensions.bmreplace.button-position.");
+    prefs.deleteBranch("extensions.bmreplace.button-position.");
+  }
+  
+  if (lastVersion < "1.3") {
+    let ktTag = "keep-title";
+    try {
+      let name = "extensions.bmreplace.keep-title-tag";
+      ktTag = prefs.getCharPref(name);
+      prefs.deleteBranch(name);
+    } catch(e) {}
+    
+    let bms = Cc["@mozilla.org/browser/nav-bookmarks-service;1"]
+          .getService(Ci.nsINavBookmarksService),
+        ts = Cc["@mozilla.org/browser/tagging-service;1"]
+          .getService(Ci.nsITaggingService);
+    for each (let uri in ts.getURIsForTag(ktTag)) {
+      for each (let id in bms.getBookmarkIdsForURI(uri)) {
+        bm.setKeepTitle(id, true);
+      }
+    }
   }
   
   main.setLastVersion(version);

@@ -5,7 +5,6 @@ let prompts = Services.prompt,
     ww = Services.ww;
 
 const PREFS_BRANCH = Services.prefs.getBranch("extensions.bmreplace."),
-      PREF_KT_TAG = "keep-title-tag",
       PREF_VERSION = "version",
       BUTTON_ID = "bmreplace-button",
       KEYSET_ID = "bmreplace-keyset";
@@ -94,14 +93,6 @@ let main = {
     ww.registerNotification(modifySelect);
     
     return prompts.select(window, title, text, count, options, result);
-  },
-  
-  getKeepTitleTag: function() {
-    try {
-      return PREFS_BRANCH.getCharPref(PREF_KT_TAG);
-    } catch(e) {
-      return "keep-title";
-    }
   },
   
   getLastVersion: function() {
