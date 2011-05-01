@@ -6,12 +6,15 @@ let bms = Cc["@mozilla.org/browser/nav-bookmarks-service;1"]
   .getService(Ci.nsINavBookmarksService);
 let hs = Cc["@mozilla.org/browser/nav-history-service;1"]
   .getService(Ci.nsINavHistoryService);
-var ts = Cc["@mozilla.org/browser/tagging-service;1"]
+let ts = Cc["@mozilla.org/browser/tagging-service;1"]
   .getService(Ci.nsITaggingService);
+let as = Cc["@mozilla.org/browser/annotation-service;1"]
+  .getService(Ci.nsIAnnotationService);
 let ios = Services.io;
 
 let bm = {
   DOMAIN_REGEX: /:\/\/([^/]*)/,
+  KEEP_TITLE_ANN: "bmreplace/keep-title",
   
   /*
    * Checks if there is a bookmark with given URL.
@@ -37,11 +40,13 @@ let bm = {
     root.containerOpen = true;
     let lst = [];
     for (var i = 0, len = root.childCount; i < len; ++i) {
-      let child = root.getChild(i);
+      let child = root.getChild(i),
+          id = child.itemId;
       lst.push({
         title: child.title,
         uri: child.uri,
-        id: child.itemId,
+        id: id,
+        checked: bm.shouldKeepTitle(id),
         weight: this.getMatchWeight(url, child.uri)
       });
     };
@@ -57,27 +62,23 @@ let bm = {
   },
   
   /*
-   * Replaces the old bookmark with a new one with given URL.
+   * Replaces bookmark's title and URL with new ones.
    * Retains the folder, bookmark's position in it, and
    * moves the tags from the old URI to the new one.
-   * If the old URI was tagged with "keep title", keeps the old title.
-   * @param id old bookmark ID.
-   * @param url URL string for the new bookmark.
-   * @return New bookmark ID.
+   * @param id Bookmark ID.
+   * @param url URL string.
+   * @param title New bookmark title. Omit to keep the old one.
    */
   replaceBookmark: function(id, url, title) {
-    let idx = bms.getItemIndex(id),
-        folder = bms.getFolderIdForItem(id),
-        oldUri = bms.getBookmarkURI(id),
-        tags = ts.getTagsForURI(oldUri, {});
-    if (tags.indexOf(main.getKeepTitleTag()) != -1) {
-      title = bms.getItemTitle(id);
-    }
-    let uri = ios.newURI(url, null, null);
+    let oldUri = bms.getBookmarkURI(id),
+        tags = ts.getTagsForURI(oldUri, {}),
+        uri = ios.newURI(url, null, null);
     ts.tagURI(uri, tags);
     ts.untagURI(oldUri, tags);
-    bms.removeItem(id);
-    return bms.insertBookmark(folder, uri, idx, title);
+    bms.changeBookmarkURI(id, uri);
+    if (title) {
+      bms.setItemTitle(id, title);
+    }
   },
   
   /*
@@ -86,5 +87,21 @@ let bm = {
   showAddBookmark: function(url, title) {
     let uri = ios.newURI(url, null, null);
     PlacesUIUtils.showMinimalAddBookmarkUI(uri, title);
+  },
+  
+  /*
+   * Checks if we should keep the old bookmark title when replacing.
+   */
+  shouldKeepTitle: function(id) {
+    try {
+      return as.getItemAnnotation(id, bm.KEEP_TITLE_ANN);
+    } catch(e) {
+      return false;
+    }
+  },
+  
+  setKeepTitle: function(id, value) {
+    as.setItemAnnotation(id, bm.KEEP_TITLE_ANN, value,
+                         0, Ci.nsIAnnotationService.EXPIRE_NEVER);
   }
 };

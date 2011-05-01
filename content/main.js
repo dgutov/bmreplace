@@ -1,7 +1,8 @@
 "use strict";
 
-let prompts = Services.prompt;
-let prefs = Services.prefs;
+let prompts = Services.prompt,
+    prefs = Services.prefs,
+    ww = Services.ww;
 
 const PREFS_BRANCH = Services.prefs.getBranch("extensions.bmreplace."),
       PREF_KT_TAG = "keep-title-tag",
@@ -15,6 +16,7 @@ let main = {
         doc = window.content.document,
         url = doc.location.toString(),
         title = _("label");
+    
     if (!bm.DOMAIN_REGEX.test(url)) {
       prompts.alert(window, title, _("urlNotSupported"));
       return;
@@ -35,13 +37,63 @@ let main = {
       return;
     }
     let titles = [b.title for each (b in bookmarks)],
-        selected = {},
-        ok = prompts.select(window, title, _("selectBookmark"), titles.length,
-                            titles, selected);
+        states = [b.checked for each (b in bookmarks)],
+        result = {},
+        ok = main.select(window, title, _("selectBookmark"), titles.length,
+                         titles, states, result);
     if (ok) {
-      let bookmark = bookmarks[selected.value];
-      bm.replaceBookmark(bookmark.id, url, doc.title);
+      let checked = result.checked,
+          idx = result.value,
+          bookmark = bookmarks[idx];
+      if (checked != states[idx]) {
+        bm.setKeepTitle(bookmark.id, checked);
+      }
+      bm.replaceBookmark(bookmark.id, url, !checked && doc.title);
+    } else if (result.addNew) {
+      bm.showAddBookmark(url, doc.title);
     }
+  },
+
+  select: function(window, title, text, count, options, states, result) {
+    function modifySelect(subject, topic) {
+      if (topic == "domwindowopened") {
+        runOnLoad(subject, function(window) {
+          let doc = window.document,
+              cb = doc.createElement("checkbox"),
+              list = $(doc, "list"),
+              accept = doc.documentElement.getButton("accept"),
+              extra2 = doc.documentElement.getButton("extra2");
+          
+          cb.setAttribute("label", _("keepOldTitle"));
+          list.parentNode.appendChild(cb);
+          extra2.hidden = false;
+          extra2.label = _("newBookmark");
+          extra2.nextSibling.hidden = false;
+          list.setAttribute("rows", 7);
+          doc.querySelector("vbox").style.width = "26em";
+          window.sizeToContent();
+          
+          list.addEventListener("select", function() {
+            cb.checked = states[list.selectedIndex];
+          }, false);
+          
+          accept.addEventListener("command", function() {
+            result.checked = cb.checked;
+          }, false);
+          
+          extra2.addEventListener("command", function() {
+            result.addNew = true;
+            window.close();
+          }, false);
+          
+          ww.unregisterNotification(modifySelect);
+        }, "");
+      }
+    }
+    
+    ww.registerNotification(modifySelect);
+    
+    return prompts.select(window, title, text, count, options, result);
   },
   
   getKeepTitleTag: function() {
