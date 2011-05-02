@@ -56,6 +56,8 @@ let main = {
   select: function(window, title, text, count, options, states, result) {
     function modifySelect(subject, topic) {
       if (topic == "domwindowopened") {
+        ww.unregisterNotification(modifySelect);
+        
         runOnLoad(subject, function(window) {
           let doc = window.document,
               cb = doc.createElement("checkbox"),
@@ -84,8 +86,6 @@ let main = {
             result.addNew = true;
             window.close();
           }, false);
-          
-          ww.unregisterNotification(modifySelect);
         }, "");
       }
     }
