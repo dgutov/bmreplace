@@ -69,7 +69,7 @@ let main = {
           list.parentNode.appendChild(cb);
           extra2.hidden = false;
           extra2.label = _("newBookmark");
-          extra2.nextSibling.hidden = false;
+          extra2.parentNode.querySelector("spacer").hidden = false;
           list.setAttribute("rows", 7);
           doc.querySelector("vbox").style.width = "26em";
           window.sizeToContent();
