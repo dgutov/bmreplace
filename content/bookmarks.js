@@ -85,8 +85,13 @@ let bm = {
    * Shows Places "Add Bookmark" dialog.
    */
   showAddBookmark: function(url, title) {
-    let uri = ios.newURI(url, null, null);
-    PlacesUIUtils.showMinimalAddBookmarkUI(uri, title);
+    PlacesUIUtils.showBookmarkDialog({
+      uri: ios.newURI(url, null, null),
+      title: title,
+      action: "add",
+      type: "bookmark",
+      hiddenRows: ["description", "location", "keyword", "loadInSidebar"]
+    });
   },
   
   /*
