@@ -9,8 +9,7 @@ bookmarks from the same domain as the current URL, sorts them by similarity,
 and gives you a prompt to choose.
 The new bookmark retains the folder, position, and all tags of the old one.
 
-If the old bookmark was tagged with `keep-title`, it keeps the old title.
-The tag name is configurable, to change it, create a string preference in
-about:config with the name `extensions.bmreplace.keep-title-tag`.
+If you check "Keep the old title", the previous title will also be carried over
+to the new bookmark.
 
 Icon by [Yusuke Kamiyamane](http://p.yusukekamiyamane.com).
