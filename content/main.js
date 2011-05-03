@@ -62,11 +62,19 @@ let main = {
           let doc = window.document,
               cb = doc.createElement("checkbox"),
               list = $(doc, "list"),
+              hbox = doc.createElement("hbox"),
+              resizer = doc.createElement("resizer"),
               accept = doc.documentElement.getButton("accept"),
               extra2 = doc.documentElement.getButton("extra2");
           
           cb.setAttribute("label", _("keepOldTitle"));
-          list.parentNode.appendChild(cb);
+          cb.setAttribute("flex", "1");
+          resizer.setAttribute("dir", "right");
+          resizer.style.marginBottom = "3px";
+          resizer.style.marginRight = "6px";
+          hbox.appendChild(cb);
+          hbox.appendChild(resizer);
+          list.parentNode.appendChild(hbox);
           extra2.hidden = false;
           extra2.label = _("newBookmark");
           extra2.parentNode.querySelector("spacer").hidden = false;
