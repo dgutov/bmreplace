@@ -62,19 +62,12 @@ let main = {
           let doc = window.document,
               cb = doc.createElement("checkbox"),
               list = $(doc, "list"),
-              hbox = doc.createElement("hbox"),
-              resizer = doc.createElement("resizer"),
               accept = doc.documentElement.getButton("accept"),
               extra2 = doc.documentElement.getButton("extra2");
           
           cb.setAttribute("label", _("keepOldTitle"));
           cb.setAttribute("flex", "1");
-          resizer.setAttribute("dir", "right");
-          resizer.style.marginBottom = "3px";
-          resizer.style.marginRight = "6px";
-          hbox.appendChild(cb);
-          hbox.appendChild(resizer);
-          list.parentNode.appendChild(hbox);
+          list.parentNode.appendChild(cb);
           extra2.hidden = false;
           extra2.label = _("newBookmark");
           extra2.parentNode.querySelector("spacer").hidden = false;
@@ -100,7 +93,20 @@ let main = {
     
     ww.registerNotification(modifySelect);
     
-    return prompts.select(window, title, text, count, options, result);
+    let bag = {
+      QueryInterface: function() { return this; },
+      getProperty: function(name) { return this[name]; },
+      setProperty: function(name, value) { this[name] = value; },
+      promptType: "select",
+      title: title,
+      text: text,
+      list: options
+    };
+    
+    window.openDialog("chrome://global/content/selectDialog.xul",
+                      "_blank", "modal,resizable,centerscreen", bag);
+    result.value = bag.selected;
+    return bag.ok;
   },
   
   getLastVersion: function() {
