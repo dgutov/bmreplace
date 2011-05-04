@@ -62,17 +62,19 @@ let main = {
           let doc = window.document,
               cb = doc.createElement("checkbox"),
               list = $(doc, "list"),
+              vbox = list.parentNode,
               accept = doc.documentElement.getButton("accept"),
               extra2 = doc.documentElement.getButton("extra2");
           
           cb.setAttribute("label", _("keepOldTitle"));
-          cb.setAttribute("flex", "1");
-          list.parentNode.appendChild(cb);
+          vbox.appendChild(cb);
           extra2.hidden = false;
           extra2.label = _("newBookmark");
           extra2.parentNode.querySelector("spacer").hidden = false;
           list.setAttribute("rows", 7);
-          doc.querySelector("vbox").style.width = "26em";
+          vbox.setAttribute("flex", "1");
+          vbox.parentNode.setAttribute("flex", "1");
+          vbox.parentNode.style.width = "26em";
           window.sizeToContent();
           
           list.addEventListener("select", function() {
