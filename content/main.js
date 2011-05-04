@@ -31,7 +31,7 @@ let main = {
                                   prompts.BUTTON_POS_1_DEFAULT,
                                   "", "", null, null, {});
       if (btn == 0) {
-        bm.showAddBookmark(url, doc.title);
+        bm.showAddBookmark(url, doc.title, window);
       }
       return;
     }
@@ -49,7 +49,7 @@ let main = {
       }
       bm.replaceBookmark(bookmark.id, url, !checked && doc.title);
     } else if (result.addNew) {
-      bm.showAddBookmark(url, doc.title);
+      bm.showAddBookmark(url, doc.title, window);
     }
   },
 
