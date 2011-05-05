@@ -60,11 +60,12 @@ let main = {
         
         runOnLoad(subject, function(window) {
           let doc = window.document,
+              dialog = doc.documentElement,
               cb = doc.createElement("checkbox"),
               list = $(doc, "list"),
               vbox = list.parentNode,
-              accept = doc.documentElement.getButton("accept"),
-              extra2 = doc.documentElement.getButton("extra2");
+              accept = dialog.getButton("accept"),
+              extra2 = dialog.getButton("extra2");
           
           cb.setAttribute("label", _("keepOldTitle"));
           vbox.appendChild(cb);
@@ -77,14 +78,17 @@ let main = {
           vbox.parentNode.style.width = "26em";
           window.sizeToContent();
           
+          let updateChecked = function() {
+            result.checked = cb.checked;
+          };
+          
+          list.addEventListener("dblclick", updateChecked, false);
+          dialog.addEventListener("dialogaccept", updateChecked, false);
+          
           list.addEventListener("select", function() {
             cb.checked = states[list.selectedIndex];
           }, false);
-          
-          accept.addEventListener("command", function() {
-            result.checked = cb.checked;
-          }, false);
-          
+                  
           extra2.addEventListener("command", function() {
             result.addNew = true;
             window.close();
