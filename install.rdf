@@ -23,6 +23,7 @@
     <em:localized>
       <Description>
         <em:locale>ru</em:locale>
+        <em:name>Replace Bookmark</em:name>
         <em:description>Быстрая замена существующей закладки на новую.</em:description>
       </Description>
     </em:localized>
