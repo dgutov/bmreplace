@@ -123,4 +123,3 @@ let main = {
     PREFS_BRANCH.setCharPref(PREF_VERSION, version);
   }
 };
-
