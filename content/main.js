@@ -64,7 +64,6 @@ let main = {
               cb = doc.createElement("checkbox"),
               list = $(doc, "list"),
               vbox = list.parentNode,
-              accept = dialog.getButton("accept"),
               extra2 = dialog.getButton("extra2");
           
           cb.setAttribute("label", _("keepOldTitle"));
@@ -88,7 +87,7 @@ let main = {
           list.addEventListener("select", function() {
             cb.checked = states[list.selectedIndex];
           }, false);
-                  
+          
           extra2.addEventListener("command", function() {
             result.addNew = true;
             window.close();
