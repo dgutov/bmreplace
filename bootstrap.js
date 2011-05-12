@@ -69,7 +69,7 @@ function startup(data, reason) {
   
   if (ADDON_INSTALL == reason) {
     setDefaultPosition(BUTTON_ID, "nav-bar", "bookmarks-menu-button-container");
-    main.setLastVersion(version);
+    main.setLastVersion(data.version);
   };
   
   if (ADDON_UPGRADE == reason) {
