@@ -5,7 +5,7 @@
   
   <Description about="urn:mozilla:install-manifest">
     <em:id>bmreplace@dgutov.github.com</em:id>
-    <em:version>1.3.4</em:version>
+    <em:version>1.3.5</em:version>
     <em:type>2</em:type>
     <em:bootstrap>true</em:bootstrap>
     <em:name>Replace Bookmark</em:name>
@@ -25,6 +25,15 @@
         <em:locale>ru</em:locale>
         <em:name>Replace Bookmark</em:name>
         <em:description>Быстрая замена существующей закладки на новую.</em:description>
+      </Description>
+    </em:localized>
+
+    <em:localized>
+      <Description>
+        <em:locale>hu</em:locale>
+        <em:name>Replace Bookmark</em:name>
+        <em:description>Létező könyvjelző gyors kicserélése.</em:description>
+        <em:translator>Imre Tabori</em:translator>
       </Description>
     </em:localized>
   </Description>
