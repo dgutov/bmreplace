@@ -44,7 +44,7 @@ function modify(window) {
   keyset.setAttribute("id", KEYSET_ID);
   let replaceKey = doc.createElement("key");
   replaceKey.setAttribute("key", "D");
-  replaceKey.setAttribute("modifiers", "accel,alt");
+  replaceKey.setAttribute("modifiers", "shift,alt");
   replaceKey.setAttribute("oncommand", "void(0);");
   replaceKey.addEventListener("command", main.action, true);
   keyset.appendChild(replaceKey);
