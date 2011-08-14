@@ -43,6 +43,7 @@ function modify(window) {
   let keyset = doc.createElement("keyset");
   keyset.setAttribute("id", KEYSET_ID);
   let replaceKey = doc.createElement("key");
+  replaceKey.setAttribute("id", KEY_ID);
   replaceKey.setAttribute("key", "D");
   replaceKey.setAttribute("modifiers", "shift,alt");
   replaceKey.setAttribute("oncommand", "void(0);");
@@ -50,9 +51,20 @@ function modify(window) {
   keyset.appendChild(replaceKey);
   win.appendChild(keyset);
   
+  // add menuitem
+  let menuItem = doc.createElement("menuitem"),
+      bookmarksItem = $(doc, "BMB_bookmarksToolbar");
+  menuItem.setAttribute("class", "menuitem-iconic");
+  menuItem.setAttribute("label", _("label"));
+  menuItem.setAttribute("key", KEY_ID);
+  menuItem.style.listStyleImage = "url(" + icon + ")";
+  menuItem.addEventListener("command", main.action, false);
+  bookmarksItem.parentNode.insertBefore(menuItem, bookmarksItem.previousSibling);
+  
   unload(function() {
     button.parentNode.removeChild(button);
     keyset.parentNode.removeChild(keyset);
+    menuItem.parentNode.removeChild(menuItem);
   }, window);
 }
 

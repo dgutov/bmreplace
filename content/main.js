@@ -7,7 +7,8 @@ let prompts = Services.prompt,
 const PREFS_BRANCH = Services.prefs.getBranch("extensions.bmreplace."),
       PREF_VERSION = "version",
       BUTTON_ID = "bmreplace-button",
-      KEYSET_ID = "bmreplace-keyset";
+      KEYSET_ID = "bmreplace-keyset",
+      KEY_ID = "bmreplace-key";
 
 let main = {
   action: function() {
