@@ -4,6 +4,8 @@ Cu.import("resource://gre/modules/PlacesUIUtils.jsm");
 
 let bms = Cc["@mozilla.org/browser/nav-bookmarks-service;1"]
   .getService(Ci.nsINavBookmarksService);
+let fs = Cc["@mozilla.org/browser/favicon-service;1"]
+      .getService(Ci.nsIFaviconService);
 let hs = Cc["@mozilla.org/browser/nav-history-service;1"]
   .getService(Ci.nsINavHistoryService);
 let ts = Cc["@mozilla.org/browser/tagging-service;1"]
@@ -72,10 +74,12 @@ let bm = {
   replaceBookmark: function(id, url, title) {
     let oldUri = bms.getBookmarkURI(id),
         tags = ts.getTagsForURI(oldUri, {}),
+        favUri = fs.getFaviconForPage(oldUri),
         uri = ios.newURI(url, null, null);
     ts.tagURI(uri, tags);
     ts.untagURI(oldUri, tags);
     bms.changeBookmarkURI(id, uri);
+    fs.setAndLoadFaviconForPage(uri, favUri, false);
     if (title) {
       bms.setItemTitle(id, title);
     }
