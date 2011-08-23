@@ -3,15 +3,15 @@
 Cu.import("resource://gre/modules/PlacesUIUtils.jsm");
 
 let bms = Cc["@mozilla.org/browser/nav-bookmarks-service;1"]
-  .getService(Ci.nsINavBookmarksService);
+      .getService(Ci.nsINavBookmarksService);
 let fs = Cc["@mozilla.org/browser/favicon-service;1"]
       .getService(Ci.nsIFaviconService);
 let hs = Cc["@mozilla.org/browser/nav-history-service;1"]
-  .getService(Ci.nsINavHistoryService);
+      .getService(Ci.nsINavHistoryService);
 let ts = Cc["@mozilla.org/browser/tagging-service;1"]
-  .getService(Ci.nsITaggingService);
+      .getService(Ci.nsITaggingService);
 let as = Cc["@mozilla.org/browser/annotation-service;1"]
-  .getService(Ci.nsIAnnotationService);
+      .getService(Ci.nsIAnnotationService);
 let ios = Services.io;
 
 let bm = {
