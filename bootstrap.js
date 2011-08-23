@@ -93,6 +93,10 @@ function startup(data, reason) {
 
 function shutdown(data, reason) unload();
 
+function install() {}
+
+function uninstall() {}
+
 function upgrade(version) {
   let lastVersion = main.getLastVersion(),
       prefs = Services.prefs;
