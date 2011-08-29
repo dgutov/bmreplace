@@ -15,7 +15,7 @@ telnet = Net::Telnet::new('Host' => 'localhost', 'Port' => 4242) # MozRepl
 
 files.map(&File.method(:new)).each do |file|
   #puts "Sending #{file.path}"
-  s = telnet.mozcmd(file.read.gsub(/\n\s*\./, '.'))
+  s = telnet.mozcmd file.read
   #puts s
 end
 
