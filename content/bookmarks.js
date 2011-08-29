@@ -74,15 +74,17 @@ let bm = {
   replaceBookmark: function(id, url, title) {
     let oldUri = bms.getBookmarkURI(id),
         tags = ts.getTagsForURI(oldUri, {}),
-        favUri = fs.getFaviconForPage(oldUri),
         uri = ios.newURI(url, null, null);
     ts.tagURI(uri, tags);
     ts.untagURI(oldUri, tags);
     bms.changeBookmarkURI(id, uri);
-    fs.setAndLoadFaviconForPage(uri, favUri, false);
     if (title) {
       bms.setItemTitle(id, title);
     }
+    try {
+      let favUri = fs.getFaviconForPage(oldUri);
+      fs.setAndLoadFaviconForPage(uri, favUri, false);
+    } catch (e) {/*NS_ERROR_NOT_AVAILABLE*/}
   },
   
   /*
