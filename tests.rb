@@ -1,4 +1,3 @@
-require 'mozrepl_client'
 require 'net/telnet'
 
 class Net::Telnet;
