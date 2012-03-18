@@ -17,7 +17,7 @@ let ios = Services.io;
 let bm = {
   DOMAIN_REGEX: /:\/\/([^/]*)/,
   KEEP_TITLE_ANN: "bmreplace/keep-title",
-  
+
   /*
    * Checks if there is a bookmark with given URL.
    * @param url URL string.
@@ -39,7 +39,7 @@ let bm = {
     lst.sort(function(a, b) b.weight - a.weight); // better matches first
     return lst;
   },
-  
+
   getBookmarksOn: function(domain) {
     let query = hs.getNewQuery();
     query.domain = domain;
@@ -63,7 +63,7 @@ let bm = {
     root.containerOpen = false;
     return lst;
   },
-  
+
   matchWeight: function(u, v) {
     u = this.urlPath(u);
     v = this.urlPath(v);
@@ -71,12 +71,12 @@ let bm = {
     for (var i = 0; i < max && u[i] == v[i]; ++i) {}
     return i;
   },
-  
+
   urlPath: function(url) {
     let match = this.DOMAIN_REGEX.exec(url);
     return url.slice(match.index + match[0].length);
   },
-  
+
   /*
    * Replaces bookmark's title and URL with new ones.
    * Retains the folder, bookmark's position in it, and
@@ -100,7 +100,7 @@ let bm = {
       fs.setAndLoadFaviconForPage(uri, favUri, false);
     } catch (e) {/*NS_ERROR_NOT_AVAILABLE*/}
   },
-  
+
   /*
    * Shows Places "Add Bookmark" dialog.
    */
@@ -113,7 +113,7 @@ let bm = {
       hiddenRows: ["description", "location", "keyword", "loadInSidebar"]
     }, parentWindow);
   },
-  
+
   /*
    * Checks if we should keep the old bookmark title when replacing.
    */
@@ -124,7 +124,7 @@ let bm = {
       return false;
     }
   },
-  
+
   setKeepTitle: function(id, value) {
     as.setItemAnnotation(id, bm.KEEP_TITLE_ANN, value,
                          0, Ci.nsIAnnotationService.EXPIRE_NEVER);

@@ -16,7 +16,7 @@ let main = {
         doc = window.content.document,
         url = doc.location.toString(),
         title = _("label");
-    
+
     if (!bm.DOMAIN_REGEX.test(url)) {
       prompts.alert(window, title, _("urlNotSupported"));
       return;
@@ -58,7 +58,7 @@ let main = {
     function modifySelect(subject, topic) {
       if (topic == "domwindowopened") {
         ww.unregisterNotification(modifySelect);
-        
+
         runOnLoad(subject, function(window) {
           let doc = window.document,
               dialog = doc.documentElement,
@@ -66,7 +66,7 @@ let main = {
               list = $(doc, "list"),
               vbox = list.parentNode,
               extra2 = dialog.getButton("extra2");
-          
+
           cb.setAttribute("label", _("keepOldTitle"));
           vbox.appendChild(cb);
           extra2.hidden = false;
@@ -77,18 +77,18 @@ let main = {
           vbox.parentNode.setAttribute("flex", "1");
           vbox.parentNode.style.width = "26em";
           window.sizeToContent();
-          
+
           let updateChecked = function() {
             result.checked = cb.checked;
           };
-          
+
           list.addEventListener("dblclick", updateChecked, false);
           dialog.addEventListener("dialogaccept", updateChecked, false);
-          
+
           list.addEventListener("select", function() {
             cb.checked = states[list.selectedIndex];
           }, false);
-          
+
           extra2.addEventListener("command", function() {
             result.addNew = true;
             window.close();
@@ -96,9 +96,9 @@ let main = {
         }, "");
       }
     }
-    
+
     ww.registerNotification(modifySelect);
-    
+
     let bag = {
       QueryInterface: function() { return this; },
       getProperty: function(name) { return this[name]; },
@@ -108,13 +108,13 @@ let main = {
       text: text,
       list: options
     };
-    
+
     window.openDialog("chrome://global/content/selectDialog.xul",
                       "_blank", "modal,resizable,centerscreen", bag);
     result.value = bag.selected;
     return bag.ok;
   },
-  
+
   getLastVersion: function() {
     try {
       return PREFS_BRANCH.getCharPref(PREF_VERSION);
@@ -122,7 +122,7 @@ let main = {
       return null;
     }
   },
-  
+
   setLastVersion: function(version) {
     PREFS_BRANCH.setCharPref(PREF_VERSION, version);
   }
