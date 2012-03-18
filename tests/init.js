@@ -29,6 +29,7 @@ function assertFalse(value, message) {
 }
 
 function assertArraysEqual(expected, actual) {
+  assertTrue(typeof actual === "object", actual + " is not an object");
   assertTrue(!((expected < actual) || (expected > actual)),
              "expected: " + expected + ", received: " + actual);
 }
@@ -37,13 +38,14 @@ function runTests() {
   for (let test in tests) {
     try {
       tests[test]();
+      undos.forEach(function(func) {func();});
+      undos = [];
     } catch (e) {
       --successful;
       errors[test] = e;
     }
     ++successful;
   }
-  undos.forEach(function(func) {func();});
   repl.print("successful: " + successful + ", total: " + total);
   for (let name in errors) {
     repl.print("'" + name + "' failed: " + errors[name]);
