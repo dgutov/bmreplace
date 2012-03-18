@@ -32,8 +32,17 @@ let bm = {
    * @return [{title, uri, id, weight}, ...].
    */
   getRelatedBookmarks: function(url) {
+    let domain = this.DOMAIN_REGEX.exec(url)[1],
+        altDomain = /^www\./.test(domain) ? domain.slice(4) : "www." + domain;
+    let lst = this.getBookmarksOn(domain).concat(this.getBookmarksOn(altDomain));
+    lst.forEach(function(item) item.weight = bm.matchWeight(url, item.uri));
+    lst.sort(function(a, b) b.weight - a.weight); // better matches first
+    return lst;
+  },
+  
+  getBookmarksOn: function(domain) {
     let query = hs.getNewQuery();
-    query.domain = this.DOMAIN_REGEX.exec(url)[1];
+    query.domain = domain;
     query.domainIsHost = true;
     query.onlyBookmarked = true;
     let options = hs.getNewQueryOptions();
@@ -48,19 +57,24 @@ let bm = {
         title: child.title,
         uri: child.uri,
         id: id,
-        checked: bm.shouldKeepTitle(id),
-        weight: this.getMatchWeight(url, child.uri)
+        checked: bm.shouldKeepTitle(id)
       });
     };
     root.containerOpen = false;
-    lst.sort(function(a, b) b.weight - a.weight); // better matches first
     return lst;
   },
   
-  getMatchWeight: function(u, v) {
+  matchWeight: function(u, v) {
+    u = this.urlPath(u);
+    v = this.urlPath(v);
     let max = Math.min(u.length, v.length);
     for (var i = 0; i < max && u[i] == v[i]; ++i) {}
     return i;
+  },
+  
+  urlPath: function(url) {
+    let match = this.DOMAIN_REGEX.exec(url);
+    return url.slice(match.index + match[0].length);
   },
   
   /*

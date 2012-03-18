@@ -6,6 +6,10 @@ function addBookmark(url, title) {
   return id;
 }
 
+function assertRelatedBookmarks(expected, url) {
+  assertArraysEqual(expected, bm.getRelatedBookmarks(url).map(function(b) b.uri));
+}
+
 test("isBookmarked", function() {
   let url = "http://google.com/?q=zyzyx";
   assertFalse(bm.isBookmarked(url));
@@ -13,13 +17,23 @@ test("isBookmarked", function() {
   assertTrue(bm.isBookmarked(url));
 });
 
+test("matchWeight ignores domains", function() {
+  assertEqual(6, bm.matchWeight("http://a.c/abc/d", "http://b/abc/de"));
+});
+
 test("getRelatedBookmarks", function() {
   let urls = ["/a/e", "/a/b/", "/b/b", "/a/b/c"]
         .map(function(path) "http://abc.com" + path),
       url = urls.pop();
   urls.forEach(addBookmark);
-  assertArraysEqual([urls[1], urls[0], urls[2]],
-                    bm.getRelatedBookmarks(url).map(function(b) b.uri));
+  assertRelatedBookmarks([urls[1], urls[0], urls[2]], url);
+});
+
+test("shows candidates with www subdomain added or stripped", function() {
+  let urls = ["http://abc.com/a/a", "http://www.abc.com/a/a"];
+  urls.forEach(addBookmark);
+  assertRelatedBookmarks([urls[0], urls[1]], urls[0].slice(0, -2));
+  assertRelatedBookmarks([urls[1], urls[0]], urls[1].slice(0, -2));
 });
 
 test("replaceBookmark", function() {
