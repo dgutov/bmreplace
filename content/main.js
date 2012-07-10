@@ -21,8 +21,15 @@ let main = {
       prompts.alert(window, title, _("urlNotSupported"));
       return;
     }
-    if (bm.isBookmarked(url)) {
-      prompts.alert(window, title, _("alreadyBookmarked"));
+    let res = bm.isBookmarked(url, doc.title);
+    if (res) {
+      if (res == bm.WRONG_TITLE) {
+        if (prompts.confirm(window, title, _("updateTitle"))) {
+          bm.setTitle(url, doc.title);
+        }
+      } else {
+        prompts.alert(window, title, _("alreadyBookmarked"));
+      }
       return;
     }
     let bookmarks = bm.getRelatedBookmarks(url);

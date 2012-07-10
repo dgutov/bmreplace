@@ -14,7 +14,8 @@ test("isBookmarked", function() {
   let url = "http://google.com/?q=zyzyx";
   assertFalse(bm.isBookmarked(url));
   addBookmark(url, "Zyzyx!");
-  assertTrue(bm.isBookmarked(url));
+  assertEqual(bm.WRONG_TITLE, bm.isBookmarked(url));
+  assertEqual(true, bm.isBookmarked(url, "Zyzyx!"));
 });
 
 test("matchWeight ignores domains", function() {
@@ -55,4 +56,11 @@ test("setDescription", function() {
   assertEqual("", PlacesUIUtils.getItemDescription(id));
   bm.setDescription(id, "abcd");
   assertEqual("abcd", PlacesUIUtils.getItemDescription(id));
+});
+
+test("firstBookmarkFor", function() {
+  let url = "http://def.com";
+  assertEqual(null, bm.firstBookmarkFor(url));
+  let id = addBookmark(url);
+  assertEqual(id, bm.firstBookmarkFor(url));
 });

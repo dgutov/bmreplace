@@ -17,13 +17,24 @@ let ios = Services.io;
 let bm = {
   DOMAIN_REGEX: /:\/\/([^/]*)/,
   KEEP_TITLE_ANN: "bmreplace/keep-title",
+  WRONG_TITLE: 10,
 
   /**
-   * Checks if there is a bookmark with given URL.
-   * @param url URL string.
+   * Checks if there is a bookmark with given URL and title.
+   * @param {String} url
+   * @param {String} title
+   * @return true if both match, WRONG_TITLE if the title doesn't match.
    */
-  isBookmarked: function(url) {
-    return bms.isBookmarked(ios.newURI(url, null, null));
+  isBookmarked: function(url, title) {
+    let id = this.firstBookmarkFor(url);
+    if (id) {
+      if (title == bms.getItemTitle(id)) {
+        return true;
+      } else {
+return this.WRONG_TITLE;
+      }
+    }
+    return false;
   },
 
   /**
@@ -103,6 +114,16 @@ let bm = {
       let favUri = fs.getFaviconForPage(oldUri);
       fs.setAndLoadFaviconForPage(uri, favUri, false);
     } catch (e) {/*NS_ERROR_NOT_AVAILABLE*/}
+  },
+
+  firstBookmarkFor: function(url) {
+    let uri = ios.newURI(url, null, null),
+        ids = bms.getBookmarkIdsForURI(uri);
+    return ids && ids[0];
+  },
+
+  setTitle: function(url, title) {
+    bms.setItemTitle(this.firstBookmarkFor(url), title);
   },
 
   /*
