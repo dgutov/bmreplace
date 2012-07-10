@@ -48,7 +48,8 @@ let main = {
       if (checked != states[idx]) {
         bm.setKeepTitle(bookmark.id, checked);
       }
-      bm.replaceBookmark(bookmark.id, url, !checked && doc.title);
+      bm.replaceBookmark(bookmark.id, url, !checked && doc.title,
+                         PlacesUIUtils.getDescriptionFromDocument(doc));
     } else if (result.addNew) {
       bm.showAddBookmark(url, doc.title, window);
     }

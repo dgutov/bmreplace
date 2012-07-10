@@ -49,3 +49,10 @@ test("replaceBookmark", function() {
     assertTrue(bm.isBookmarked(b));
   });
 });
+
+test("setDescription", function() {
+  let id = addBookmark("http://bbb.ddd");
+  assertEqual("", PlacesUIUtils.getItemDescription(id));
+  bm.setDescription(id, "abcd");
+  assertEqual("abcd", PlacesUIUtils.getItemDescription(id));
+});

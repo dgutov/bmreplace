@@ -18,7 +18,7 @@ let bm = {
   DOMAIN_REGEX: /:\/\/([^/]*)/,
   KEEP_TITLE_ANN: "bmreplace/keep-title",
 
-  /*
+  /**
    * Checks if there is a bookmark with given URL.
    * @param url URL string.
    */
@@ -26,7 +26,7 @@ let bm = {
     return bms.isBookmarked(ios.newURI(url, null, null));
   },
 
-  /*
+  /**
    * Finds bookmarks related to the given url, sorts them by
    * the length of the common substring (starting from the beginning).
    * @return [{title, uri, id, weight}, ...].
@@ -77,15 +77,16 @@ let bm = {
     return url.slice(match.index + match[0].length);
   },
 
-  /*
+  /**
    * Replaces bookmark's title and URL with new ones.
    * Retains the folder, bookmark's position in it, and
    * moves the tags from the old URI to the new one.
    * @param id Bookmark ID.
    * @param url URL string.
-   * @param title New bookmark title. Omit to keep the old one.
+   * @param title New title. Optional.
+   * @param description New description. Optional.
    */
-  replaceBookmark: function(id, url, title) {
+  replaceBookmark: function(id, url, title, description) {
     let oldUri = bms.getBookmarkURI(id),
         tags = ts.getTagsForURI(oldUri, {}),
         uri = ios.newURI(url, null, null);
@@ -94,6 +95,9 @@ let bm = {
     bms.changeBookmarkURI(id, uri);
     if (title) {
       bms.setItemTitle(id, title);
+    }
+    if (description) {
+      this.setDescription(id, description);
     }
     try {
       let favUri = fs.getFaviconForPage(oldUri);
@@ -127,6 +131,11 @@ let bm = {
 
   setKeepTitle: function(id, value) {
     as.setItemAnnotation(id, bm.KEEP_TITLE_ANN, value,
+                         0, Ci.nsIAnnotationService.EXPIRE_NEVER);
+  },
+
+  setDescription: function(id, value) {
+    as.setItemAnnotation(id, PlacesUIUtils.DESCRIPTION_ANNO, value,
                          0, Ci.nsIAnnotationService.EXPIRE_NEVER);
   }
 };
