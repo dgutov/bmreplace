@@ -51,7 +51,7 @@ function modify(window) {
   keyset.appendChild(replaceKey);
   win.appendChild(keyset);
 
-  // add menuitem
+  // add menu item to bookmarks toolbar menu
   let menuItem = doc.createElement("menuitem"),
       bookmarksItem = $(doc, "BMB_bookmarksToolbar");
   menuItem.setAttribute("class", "menuitem-iconic");
@@ -61,10 +61,17 @@ function modify(window) {
   menuItem.addEventListener("command", main.action, false);
   bookmarksItem.parentNode.insertBefore(menuItem, bookmarksItem.previousSibling);
 
+  // add menu item to main bookmarks menu
+  let menuItem2 = menuItem.cloneNode(),
+      allTabsItem = $(doc, "menu_bookmarkAllTabs");
+  menuItem2.addEventListener("command", main.action, false);
+  allTabsItem.parentNode.insertBefore(menuItem2, allTabsItem);
+
   unload(function() {
     button.parentNode.removeChild(button);
     keyset.parentNode.removeChild(keyset);
     menuItem.parentNode.removeChild(menuItem);
+    allTabsItem.parentNode.removeChild(menuItem2);
   }, window);
 }
 
