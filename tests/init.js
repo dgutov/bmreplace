@@ -38,13 +38,12 @@ function runTests() {
   for (let test in tests) {
     try {
       tests[test]();
-      undos.forEach(function(func) {func();});
-      undos = [];
+      ++successful;
     } catch (e) {
-      --successful;
       errors[test] = e;
     }
-    ++successful;
+    undos.forEach(function(func) {func();});
+    undos = [];
   }
   repl.print("successful: " + successful + ", total: " + total);
   for (let name in errors) {
