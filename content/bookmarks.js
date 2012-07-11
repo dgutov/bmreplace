@@ -31,7 +31,7 @@ let bm = {
       if (title == bms.getItemTitle(id)) {
         return true;
       } else {
-return this.WRONG_TITLE;
+        return this.WRONG_TITLE;
       }
     }
     return false;
@@ -52,6 +52,9 @@ return this.WRONG_TITLE;
   },
 
   getBookmarksOn: function(domain) {
+    try {
+      var keepTitleDefault = PREFS_BRANCH.getBoolPref(PREF_KEEP_TITLE);
+    } catch(e) {}
     let query = hs.getNewQuery();
     query.domain = domain;
     query.domainIsHost = true;
@@ -68,7 +71,7 @@ return this.WRONG_TITLE;
         title: child.title,
         uri: child.uri,
         id: id,
-        checked: bm.shouldKeepTitle(id)
+        checked: bm.shouldKeepTitle(id, keepTitleDefault)
       });
     };
     root.containerOpen = false;
@@ -142,11 +145,11 @@ return this.WRONG_TITLE;
   /*
    * Checks if we should keep the old bookmark title when replacing.
    */
-  shouldKeepTitle: function(id) {
+  shouldKeepTitle: function(id, defaultValue) {
     try {
       return as.getItemAnnotation(id, bm.KEEP_TITLE_ANN);
     } catch(e) {
-      return false;
+      return defaultValue;
     }
   },
 
