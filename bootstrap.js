@@ -54,6 +54,12 @@ function modify(window) {
   // add menu item to bookmarks toolbar menu
   let menuItem = doc.createElement("menuitem"),
       bookmarksItem = $(doc, "BMB_bookmarksToolbar");
+
+  if (!bookmarksItem) { // not on any of the toolbars
+    let palette = $(doc, "navigator-toolbox").palette;
+    bookmarksItem = $(palette, "BMB_bookmarksToolbar");
+  }
+
   menuItem.setAttribute("class", "menuitem-iconic");
   menuItem.setAttribute("label", _("label"));
   menuItem.setAttribute("key", KEY_ID);
