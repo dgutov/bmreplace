@@ -67,17 +67,24 @@ function modify(window) {
   menuItem.addEventListener("command", main.action, false);
   bookmarksItem.parentNode.insertBefore(menuItem, bookmarksItem.previousSibling);
 
-  // add menu item to main bookmarks menu
+  // main bookmarks menu item
   let menuItem2 = menuItem.cloneNode(),
       allTabsItem = $(doc, "menu_bookmarkAllTabs");
   menuItem2.addEventListener("command", main.action, false);
   allTabsItem.parentNode.insertBefore(menuItem2, allTabsItem);
+
+  // appmenu bookmarks menu item
+  let menuItem3 = menuItem.cloneNode(),
+      appmenuItem = $(doc, "appmenu_bookmarksToolbar");
+  menuItem3.addEventListener("command", main.action, false);
+  appmenuItem.parentNode.insertBefore(menuItem3, appmenuItem.previousSibling);
 
   unload(function() {
     button.parentNode.removeChild(button);
     keyset.parentNode.removeChild(keyset);
     menuItem.parentNode.removeChild(menuItem);
     allTabsItem.parentNode.removeChild(menuItem2);
+    appmenuItem.parentNode.removeChild(menuItem3);
   }, window);
 }
 
