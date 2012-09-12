@@ -51,40 +51,46 @@ function modify(window) {
   keyset.appendChild(replaceKey);
   win.appendChild(keyset);
 
-  // add menu item to bookmarks toolbar menu
-  let menuItem = doc.createElement("menuitem"),
-      bookmarksItem = $(doc, "BMB_bookmarksToolbar");
+  if (PREFS_BRANCH.getBoolPref(PREF_MENU_ITEM)) {
+    // Bookmarks toolbar menu
+    let menuItem = doc.createElement("menuitem"),
+        bookmarksItem = $(doc, "BMB_bookmarksToolbar");
 
-  if (!bookmarksItem) { // not on any of the toolbars
-    let palette = $(doc, "navigator-toolbox").palette;
-    bookmarksItem = $(palette, "BMB_bookmarksToolbar");
+    if (!bookmarksItem) { // not on any of the toolbars
+      let palette = $(doc, "navigator-toolbox").palette;
+      bookmarksItem = $(palette, "BMB_bookmarksToolbar");
+    }
+
+    menuItem.setAttribute("class", "menuitem-iconic");
+    menuItem.setAttribute("label", _("label"));
+    menuItem.setAttribute("key", KEY_ID);
+    menuItem.style.listStyleImage = "url(" + icon + ")";
+    menuItem.addEventListener("command", main.action, false);
+    bookmarksItem.parentNode.insertBefore(menuItem,
+                                          bookmarksItem.previousSibling);
+
+    // Main bookmarks menu
+    let menuItem2 = menuItem.cloneNode(),
+        allTabsItem = $(doc, "menu_bookmarkAllTabs");
+    menuItem2.addEventListener("command", main.action, false);
+    allTabsItem.parentNode.insertBefore(menuItem2, allTabsItem);
+
+    // Appmenu bookmarks menu
+    let menuItem3 = menuItem.cloneNode(),
+        appmenuItem = $(doc, "appmenu_bookmarksToolbar");
+    menuItem3.addEventListener("command", main.action, false);
+    appmenuItem.parentNode.insertBefore(menuItem3, appmenuItem.previousSibling);
+
+    unload(function() {
+      menuItem.parentNode.removeChild(menuItem);
+      allTabsItem.parentNode.removeChild(menuItem2);
+      appmenuItem.parentNode.removeChild(menuItem3);
+    }, window);
   }
-
-  menuItem.setAttribute("class", "menuitem-iconic");
-  menuItem.setAttribute("label", _("label"));
-  menuItem.setAttribute("key", KEY_ID);
-  menuItem.style.listStyleImage = "url(" + icon + ")";
-  menuItem.addEventListener("command", main.action, false);
-  bookmarksItem.parentNode.insertBefore(menuItem, bookmarksItem.previousSibling);
-
-  // main bookmarks menu item
-  let menuItem2 = menuItem.cloneNode(),
-      allTabsItem = $(doc, "menu_bookmarkAllTabs");
-  menuItem2.addEventListener("command", main.action, false);
-  allTabsItem.parentNode.insertBefore(menuItem2, allTabsItem);
-
-  // appmenu bookmarks menu item
-  let menuItem3 = menuItem.cloneNode(),
-      appmenuItem = $(doc, "appmenu_bookmarksToolbar");
-  menuItem3.addEventListener("command", main.action, false);
-  appmenuItem.parentNode.insertBefore(menuItem3, appmenuItem.previousSibling);
-
+  
   unload(function() {
     button.parentNode.removeChild(button);
     keyset.parentNode.removeChild(keyset);
-    menuItem.parentNode.removeChild(menuItem);
-    allTabsItem.parentNode.removeChild(menuItem2);
-    appmenuItem.parentNode.removeChild(menuItem3);
   }, window);
 }
 
@@ -108,6 +114,10 @@ function startup(data, reason) {
     upgrade(data.version);
   }
 
+  DEFAULTS_BRANCH.setBoolPref(PREF_MENU_ITEM, true);
+  DEFAULTS_BRANCH.setBoolPref(PREF_DESCRIPTION, true);
+  DEFAULTS_BRANCH.setBoolPref(PREF_KEEP_TITLE, false);
+  
   watchWindows(modify, "navigator:browser");
 };
 

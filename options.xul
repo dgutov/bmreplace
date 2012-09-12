@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE mydialog SYSTEM "chrome://bmreplace/locale/options.dtd">
+
+<vbox xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <setting type="bool" pref="extensions.bmreplace.add-menu-item"
+           title="&menu.item.title;" />
+  <setting type="bool" pref="extensions.bmreplace.update-description"
+           title="&update.description.title;" />
+  <setting type="bool" pref="extensions.bmreplace.keep-title-default"
+           title="&old.name.title;" />
+</vbox>

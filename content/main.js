@@ -5,7 +5,10 @@ let prompts = Services.prompt,
     ww = Services.ww;
 
 const PREFS_BRANCH = Services.prefs.getBranch("extensions.bmreplace."),
+      DEFAULTS_BRANCH = Services.prefs.getDefaultBranch("extensions.bmreplace."),
       PREF_VERSION = "version",
+      PREF_MENU_ITEM = "add-menu-item",
+      PREF_DESCRIPTION = "update-description",
       PREF_KEEP_TITLE = "keep-title-default",
       BUTTON_ID = "bmreplace-button",
       KEYSET_ID = "bmreplace-keyset",
@@ -57,6 +60,7 @@ let main = {
         bm.setKeepTitle(bookmark.id, checked);
       }
       bm.replaceBookmark(bookmark.id, url, !checked && doc.title,
+                         PREFS_BRANCH.getBoolPref(PREF_DESCRIPTION) &&
                          PlacesUIUtils.getDescriptionFromDocument(doc));
     } else if (result.addNew) {
       bm.showAddBookmark(url, doc.title, window);
