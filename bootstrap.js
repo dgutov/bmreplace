@@ -3,7 +3,7 @@ const {classes: Cc, interfaces: Ci, utils: Cu} = Components;
 Cu.import("resource://gre/modules/Services.jsm");
 Cu.import("resource://gre/modules/AddonManager.jsm");
 
-var self = this, icon;
+var self = this, icon, prefHandlers = [];
 
 function include(path) {
   Services.scriptloader.loadSubScript(addon.getResourceURI(path).spec, self);
@@ -23,13 +23,21 @@ function $(node, childId) {
   }
 }
 
+var prefsObserver = {
+  observe: function(subject, topic, data) {
+    if (topic == "nsPref:changed") {
+      prefHandlers.forEach(function(func) {func(data);});
+    }
+  }
+};
+
 function modify(window) {
   if (!window) return;
 
   let doc = window.document,
       win = doc.querySelector("window");
 
-  // add button
+  // Add toolbar button
   let button = doc.createElement("toolbarbutton");
   button.setAttribute("id", BUTTON_ID);
   button.setAttribute("label", _("label"));
@@ -39,17 +47,17 @@ function modify(window) {
   button.addEventListener("command", main.action, false);
   restorePosition(doc, button);
 
-  // add hotkey
-  let keyset = doc.createElement("keyset");
-  keyset.setAttribute("id", KEYSET_ID);
-  let replaceKey = doc.createElement("key");
-  replaceKey.setAttribute("id", KEY_ID);
-  replaceKey.setAttribute("key", "D");
-  replaceKey.setAttribute("modifiers", "shift,alt");
-  replaceKey.setAttribute("oncommand", "void(0);");
-  replaceKey.addEventListener("command", main.action, true);
-  keyset.appendChild(replaceKey);
-  win.appendChild(keyset);
+  // Add shortcut
+  let keyset = appendKeyset(doc, win);
+
+  let handlerIdx = prefHandlers.push(function(name) {
+    switch (name) {
+    case PREF_SHORTCUT_KEY:
+    case PREF_SHORTCUT_MODIFIERS:
+      win.removeChild(keyset);
+      keyset = appendKeyset(doc, win);
+    }
+  }) - 1;
 
   if (getPref(PREF_MENU_ITEM)) {
     // Bookmarks toolbar menu
@@ -91,8 +99,48 @@ function modify(window) {
   unload(function() {
     button.parentNode.removeChild(button);
     keyset.parentNode.removeChild(keyset);
+    prefHandlers.splice(handlerIdx, 1);
   }, window);
 }
+
+function appendKeyset(doc, win) {
+  let keyset = doc.createElement("keyset");
+  keyset.setAttribute("id", KEYSET_ID);
+  let replaceKey = doc.createElement("key");
+  replaceKey.setAttribute("id", KEY_ID);
+  replaceKey.setAttribute("key", getPref(PREF_SHORTCUT_KEY));
+  replaceKey.setAttribute("modifiers", getPref(PREF_SHORTCUT_MODIFIERS));
+  replaceKey.setAttribute("oncommand", "void(0);");
+  replaceKey.addEventListener("command", main.action, true);
+  keyset.appendChild(replaceKey);
+  win.appendChild(keyset);
+  return keyset;
+}
+
+function makeOptionsObserver (id) {
+  return {
+    observe: function(subject, topic, data) {
+      if (data == id) {
+        var doc = subject;
+        var menulist = doc.getElementById("bmreplace-keys-menulist");
+        if (menulist.childNodes.length == 0) {
+          let popup = doc.createElement("menupopup"),
+              a = "a".charCodeAt(0),
+              z = "z".charCodeAt(0);
+          for (let c = a; c <= z; c++) {
+            let item = doc.createElement("menuitem"),
+                s = String.fromCharCode(c);
+            item.setAttribute("value", s);
+            item.setAttribute("label", s);
+            popup.appendChild(item);
+          };
+          menulist.appendChild(popup);
+        }
+        menulist.value = getPref(PREF_SHORTCUT_KEY);
+      }
+    }
+  };
+};
 
 function startup(data, reason) {
   include("content/main.js");
@@ -118,6 +166,18 @@ function startup(data, reason) {
   setDefaultPrefs();
 
   watchWindows(modify, "navigator:browser");
+
+  let optionsObserver = makeOptionsObserver(data.id),
+      branch = Services.prefs.getBranch(PREF_BRANCH)
+        .QueryInterface(Ci.nsIPrefBranch2);
+
+  branch.addObserver("", prefsObserver, false);
+  Services.obs.addObserver(optionsObserver, "addon-options-displayed", false);
+
+  unload(function() {
+    branch.removeObserver("", prefsObserver);
+    Services.obs.removeObserver(optionsObserver, "addon-options-displayed");
+  });
 };
 
 function shutdown(data, reason) unload();

@@ -2,3 +2,5 @@
 <!ENTITY update.description.title "Update the bookmark description">
 <!ENTITY old.name.title "Keep the old name by default">
 <!ENTITY no.prompt.if.one "If exactly one match, replace without prompt">
+<!ENTITY shortcut.key "Shortcut character">
+<!ENTITY shortcut.modifiers "Shortcut modifiers">

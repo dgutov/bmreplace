@@ -11,4 +11,15 @@
            title="&old.name.title;" />
   <setting type="bool" pref="extensions.bmreplace.no-prompt-if-one"
            title="&no.prompt.if.one;" />
+  <setting type="menulist" pref="extensions.bmreplace.shortcut-key"
+           title="&shortcut.key;">
+    <menulist id="bmreplace-keys-menulist"></menulist>
+  </setting>
+  <setting type="radio" pref="extensions.bmreplace.shortcut-modifiers"
+           title="&shortcut.modifiers;">
+    <radiogroup>
+      <radio value="shift,alt" label="Alt+Shift"/>
+      <radio value="accel,alt" label="Ctrl+Alt"/>
+    </radiogroup>
+  </setting>
 </vbox>

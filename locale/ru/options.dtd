@@ -2,3 +2,5 @@
 <!ENTITY update.description.title "Обновлять описание закладки">
 <!ENTITY old.name.title "По умолчанию, оставлять старое название">
 <!ENTITY no.prompt.if.one "Если ровно одно совпадение, заменять сразу">
+<!ENTITY shortcut.key "Сочетание клавиш (буква)">
+<!ENTITY shortcut.modifiers "Сочетание клавиш (модификаторы)">

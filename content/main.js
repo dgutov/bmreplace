@@ -10,6 +10,8 @@ const PREF_BRANCH = "extensions.bmreplace.",
       PREF_DESCRIPTION = "update-description",
       PREF_KEEP_TITLE = "keep-title-default",
       PREF_ONE_NO_PROMPT = "no-prompt-if-one",
+      PREF_SHORTCUT_KEY = "shortcut-key",
+      PREF_SHORTCUT_MODIFIERS = "shortcut-modifiers",
       PREFS = {},
       BUTTON_ID = "bmreplace-button",
       KEYSET_ID = "bmreplace-keyset",
@@ -20,6 +22,8 @@ PREFS[PREF_MENU_ITEM]     = true;
 PREFS[PREF_DESCRIPTION]   = true;
 PREFS[PREF_KEEP_TITLE]    = false;
 PREFS[PREF_ONE_NO_PROMPT] = false;
+PREFS[PREF_SHORTCUT_KEY]       = "d";
+PREFS[PREF_SHORTCUT_MODIFIERS] = "shift,alt";
 
 let main = {
   action: function() {
