@@ -20,6 +20,7 @@
     <radiogroup>
       <radio value="shift,alt" label="Alt+Shift"/>
       <radio value="accel,alt" label="Ctrl+Alt"/>
+      <radio value="accel,shift" label="Ctrl+Shift"/>
     </radiogroup>
   </setting>
 </vbox>
