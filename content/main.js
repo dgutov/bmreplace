@@ -9,15 +9,17 @@ const PREF_BRANCH = "extensions.bmreplace.",
       PREF_MENU_ITEM = "add-menu-item",
       PREF_DESCRIPTION = "update-description",
       PREF_KEEP_TITLE = "keep-title-default",
+      PREF_ONE_NO_PROMPT = "no-prompt-if-one",
       PREFS = {},
       BUTTON_ID = "bmreplace-button",
       KEYSET_ID = "bmreplace-keyset",
       KEY_ID = "bmreplace-key";
 
-PREFS[PREF_VERSION]     = "0.0";
-PREFS[PREF_MENU_ITEM]   = true;
-PREFS[PREF_DESCRIPTION] = true;
-PREFS[PREF_KEEP_TITLE]  = false;
+PREFS[PREF_VERSION]       = "0.0";
+PREFS[PREF_MENU_ITEM]     = true;
+PREFS[PREF_DESCRIPTION]   = true;
+PREFS[PREF_KEEP_TITLE]    = false;
+PREFS[PREF_ONE_NO_PROMPT] = false;
 
 let main = {
   action: function() {
@@ -30,6 +32,7 @@ let main = {
       prompts.alert(window, title, _("urlNotSupported"));
       return;
     }
+
     let res = bm.isBookmarked(url, doc.title);
     if (res) {
       if (res == bm.WRONG_TITLE) {
@@ -41,6 +44,7 @@ let main = {
       }
       return;
     }
+
     let bookmarks = bm.getRelatedBookmarks(url);
     if (!bookmarks.length) {
       let btn = prompts.confirmEx(window, title, _("relatedNotFound"),
@@ -52,22 +56,31 @@ let main = {
       }
       return;
     }
+
     let titles = [b.title for each (b in bookmarks)],
         states = [b.checked for each (b in bookmarks)],
-        result = {},
-        ok = main.select(window, title, _("selectBookmark"), titles.length,
-                         titles, states, result);
+        checked, idx, addNew, ok;
+
+    if (titles.length == 1 && getPref(PREF_ONE_NO_PROMPT)) {
+      checked = states[0], idx = 0, ok = true;
+    } else {
+      let result = {};
+      ok = main.select(window, title, _("selectBookmark"), titles.length,
+                       titles, states, result);
+      checked = result.checked;
+      idx = result.value;
+      addNew = result.addNew;
+    }
+
     if (ok) {
-      let checked = result.checked,
-          idx = result.value,
-          bookmark = bookmarks[idx];
+      let bookmark = bookmarks[idx];
       if (checked != states[idx]) {
         bm.setKeepTitle(bookmark.id, checked);
       }
       bm.replaceBookmark(bookmark.id, url, !checked && doc.title,
                          getPref(PREF_DESCRIPTION) &&
                          PlacesUIUtils.getDescriptionFromDocument(doc));
-    } else if (result.addNew) {
+    } else if (addNew) {
       bm.showAddBookmark(url, doc.title, window);
     }
   },

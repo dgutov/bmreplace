@@ -9,4 +9,6 @@
            title="&update.description.title;" />
   <setting type="bool" pref="extensions.bmreplace.keep-title-default"
            title="&old.name.title;" />
+  <setting type="bool" pref="extensions.bmreplace.no-prompt-if-one"
+           title="&no.prompt.if.one;" />
 </vbox>

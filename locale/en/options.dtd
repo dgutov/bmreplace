@@ -1,3 +1,4 @@
 <!ENTITY menu.item.title "Add the menu item">
 <!ENTITY update.description.title "Update the bookmark description">
 <!ENTITY old.name.title "Keep the old name by default">
+<!ENTITY no.prompt.if.one "If exactly one match, replace without prompt">
