@@ -8,7 +8,8 @@ class Net::Telnet;
   end
 end
 
-files = Dir['content/*.js'] + Dir['tests/init.js'] + Dir['tests/*_test.js']
+files = Dir['content/*.js'] + Dir['includes/prefs.js'] +
+  Dir['tests/init.js'] + Dir['tests/*_test.js']
 
 telnet = Net::Telnet::new('Host' => 'localhost', 'Port' => 4242) # MozRepl
 
