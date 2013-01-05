@@ -51,7 +51,7 @@ function modify(window) {
   keyset.appendChild(replaceKey);
   win.appendChild(keyset);
 
-  if (PREFS_BRANCH.getBoolPref(PREF_MENU_ITEM)) {
+  if (getPref(PREF_MENU_ITEM)) {
     // Bookmarks toolbar menu
     let menuItem = doc.createElement("menuitem"),
         bookmarksItem = $(doc, "BMB_bookmarksToolbar");
@@ -87,7 +87,7 @@ function modify(window) {
       appmenuItem.parentNode.removeChild(menuItem3);
     }, window);
   }
-  
+
   unload(function() {
     button.parentNode.removeChild(button);
     keyset.parentNode.removeChild(keyset);
@@ -100,6 +100,7 @@ function startup(data, reason) {
   include("includes/utils.js");
   include("includes/l10n.js");
   include("includes/buttons.js");
+  include("includes/prefs.js");
   icon = addon.getResourceURI("content/icon.png").spec;
 
   l10n(addon, "bmr.properties");
@@ -114,10 +115,8 @@ function startup(data, reason) {
     upgrade(data.version);
   }
 
-  DEFAULTS_BRANCH.setBoolPref(PREF_MENU_ITEM, true);
-  DEFAULTS_BRANCH.setBoolPref(PREF_DESCRIPTION, true);
-  DEFAULTS_BRANCH.setBoolPref(PREF_KEEP_TITLE, false);
-  
+  setDefaultPrefs();
+
   watchWindows(modify, "navigator:browser");
 };
 
@@ -128,7 +127,7 @@ function install() {}
 function uninstall() {}
 
 function upgrade(version) {
-  let lastVersion = main.getLastVersion(),
+  let lastVersion = getPref(PREF_VERSION),
       prefs = Services.prefs;
 
   if (lastVersion < "1.2") {
@@ -154,5 +153,5 @@ function upgrade(version) {
     }
   }
 
-  main.setLastVersion(version);
+  getPref.branch.setCharPref(PREF_VERSION, version);
 }

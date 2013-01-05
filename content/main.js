@@ -4,15 +4,20 @@ let prompts = Services.prompt,
     prefs = Services.prefs,
     ww = Services.ww;
 
-const PREFS_BRANCH = Services.prefs.getBranch("extensions.bmreplace."),
-      DEFAULTS_BRANCH = Services.prefs.getDefaultBranch("extensions.bmreplace."),
+const PREF_BRANCH = "extensions.bmreplace.",
       PREF_VERSION = "version",
       PREF_MENU_ITEM = "add-menu-item",
       PREF_DESCRIPTION = "update-description",
       PREF_KEEP_TITLE = "keep-title-default",
+      PREFS = {},
       BUTTON_ID = "bmreplace-button",
       KEYSET_ID = "bmreplace-keyset",
       KEY_ID = "bmreplace-key";
+
+PREFS[PREF_VERSION]     = "0.0";
+PREFS[PREF_MENU_ITEM]   = true;
+PREFS[PREF_DESCRIPTION] = true;
+PREFS[PREF_KEEP_TITLE]  = false;
 
 let main = {
   action: function() {
@@ -60,7 +65,7 @@ let main = {
         bm.setKeepTitle(bookmark.id, checked);
       }
       bm.replaceBookmark(bookmark.id, url, !checked && doc.title,
-                         PREFS_BRANCH.getBoolPref(PREF_DESCRIPTION) &&
+                         getPref(PREF_DESCRIPTION) &&
                          PlacesUIUtils.getDescriptionFromDocument(doc));
     } else if (result.addNew) {
       bm.showAddBookmark(url, doc.title, window);
@@ -126,17 +131,5 @@ let main = {
                       "_blank", "modal,resizable,centerscreen", bag);
     result.value = bag.selected;
     return bag.ok;
-  },
-
-  getLastVersion: function() {
-    try {
-      return PREFS_BRANCH.getCharPref(PREF_VERSION);
-    } catch(e) {
-      return null;
-    }
-  },
-
-  setLastVersion: function(version) {
-    PREFS_BRANCH.setCharPref(PREF_VERSION, version);
   }
 };

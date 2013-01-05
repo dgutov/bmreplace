@@ -52,7 +52,7 @@ let bm = {
   },
 
   getBookmarksOn: function(domain) {
-    let keepTitleDefault = PREFS_BRANCH.getBoolPref(PREF_KEEP_TITLE),
+    let keepTitleDefault = getPref(PREF_KEEP_TITLE),
         query = hs.getNewQuery();
     query.domain = domain;
     query.domainIsHost = true;
