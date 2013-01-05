@@ -54,3 +54,7 @@ function runTests() {
 function undo(func) {
   undos.push(func);
 }
+
+function getPref(key) {
+  return PREFS[key];
+}

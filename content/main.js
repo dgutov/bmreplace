@@ -12,6 +12,7 @@ const PREF_BRANCH = "extensions.bmreplace.",
       PREF_ONE_NO_PROMPT = "no-prompt-if-one",
       PREF_SHORTCUT_KEY = "shortcut-key",
       PREF_SHORTCUT_MODIFIERS = "shortcut-modifiers",
+      PREF_SPECIAL_DOMAINS = "special-domains",
       PREFS = {},
       BUTTON_ID = "bmreplace-button",
       KEYSET_ID = "bmreplace-keyset",
@@ -24,6 +25,7 @@ PREFS[PREF_KEEP_TITLE]    = false;
 PREFS[PREF_ONE_NO_PROMPT] = false;
 PREFS[PREF_SHORTCUT_KEY]       = "d";
 PREFS[PREF_SHORTCUT_MODIFIERS] = "shift,alt";
+PREFS[PREF_SPECIAL_DOMAINS] = "youtube.com,vimeo.com,blip.tv";
 
 let main = {
   action: function() {
@@ -49,7 +51,7 @@ let main = {
       return;
     }
 
-    let bookmarks = bm.getRelatedBookmarks(url);
+    let bookmarks = bm.getRelatedBookmarks(url, doc.title);
     if (!bookmarks.length) {
       let btn = prompts.confirmEx(window, title, _("relatedNotFound"),
                                   prompts.STD_YES_NO_BUTTONS +

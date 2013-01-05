@@ -4,3 +4,4 @@
 <!ENTITY no.prompt.if.one "Если ровно одно совпадение, заменять сразу">
 <!ENTITY shortcut.key "Сочетание клавиш (буква)">
 <!ENTITY shortcut.modifiers "Сочетание клавиш (модификаторы)">
+<!ENTITY special.domains "Особые домены">

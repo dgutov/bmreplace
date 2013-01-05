@@ -4,3 +4,4 @@
 <!ENTITY no.prompt.if.one "If exactly one match, replace without prompt">
 <!ENTITY shortcut.key "Shortcut character">
 <!ENTITY shortcut.modifiers "Shortcut modifiers">
+<!ENTITY special.domains "Special domains">

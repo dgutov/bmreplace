@@ -6,8 +6,9 @@ function addBookmark(url, title) {
   return id;
 }
 
-function assertRelatedBookmarks(expected, url) {
-  assertArraysEqual(expected, bm.getRelatedBookmarks(url).map(function(b) b.uri));
+function assertRelatedBookmarks(expected, url, title) {
+  assertArraysEqual(expected,
+                    bm.getRelatedBookmarks(url, title).map(function(b) b.uri));
 }
 
 test("isBookmarked", function() {
@@ -18,23 +19,59 @@ test("isBookmarked", function() {
   assertEqual(true, bm.isBookmarked(url, "Zyzyx!"));
 });
 
-test("matchWeight ignores domains", function() {
-  assertEqual(6, bm.matchWeight("http://a.c/abc/d", "http://b/abc/de"));
+test("matchWeight comparePaths", function() {
+  assertEqual(6, bm.matchWeight("http://a.c/abc/d", "http://b/abc/de", true));
+});
+
+test("matchWeight full strings", function() {
+  assertEqual(7, bm.matchWeight("http://a.c/abc/d", "http://b/abc/de"));
+});
+
+test("isDomainSpecial", function() {
+  assertFalse(bm.isDomainSpecial("abc.com"));
+});
+
+test("isDomainSpecial youtube", function() {
+  assertTrue(bm.isDomainSpecial("youtube.com"));
+});
+
+test("isDomainSpecial youtube dot is not wilcard", function() {
+  assertFalse(bm.isDomainSpecial("youtubedcom"));
+});
+
+test("isDomainSpecial www.youtube", function() {
+  assertTrue(bm.isDomainSpecial("www.youtube.com"));
+});
+
+test("isDomainSpecial myyoutube", function() {
+  assertFalse(bm.isDomainSpecial("myyoutube.com"));
 });
 
 test("getRelatedBookmarks", function() {
   let urls = ["/a/e", "/a/b/", "/b/b", "/a/b/c"]
         .map(function(path) "http://abc.com" + path),
       url = urls.pop();
-  urls.forEach(addBookmark);
-  assertRelatedBookmarks([urls[1], urls[0], urls[2]], url);
+  urls.forEach(function(url, index) {
+    addBookmark(url, ["a", "b", "c"][index]);
+  });
+  assertRelatedBookmarks([urls[1], urls[0], urls[2]], url, "a");
+});
+
+test("getRelatedBookmarks on a special domain", function() {
+  let urls = ["/a/e", "/a/b/", "/b/b", "/a/e/c"]
+        .map(function(path) "http://youtube.com" + path),
+      url = urls.pop();
+  urls.forEach(function(url, index) {
+    addBookmark(url, ["ab", "aa", "c"][index]);
+  });
+  assertRelatedBookmarks([urls[1], urls[0], urls[2]], url, "aaa");
 });
 
 test("shows candidates with www subdomain added or stripped", function() {
   let urls = ["http://abc.com/a/a", "http://www.abc.com/a/a"];
   urls.forEach(addBookmark);
-  assertRelatedBookmarks([urls[0], urls[1]], urls[0].slice(0, -2));
-  assertRelatedBookmarks([urls[1], urls[0]], urls[1].slice(0, -2));
+  assertRelatedBookmarks([urls[0], urls[1]], urls[0].slice(0, -2), "foo");
+  assertRelatedBookmarks([urls[1], urls[0]], urls[1].slice(0, -2), "foo");
 });
 
 test("replaceBookmark", function() {

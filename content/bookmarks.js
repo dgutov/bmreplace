@@ -39,14 +39,22 @@ let bm = {
 
   /**
    * Finds bookmarks related to the given url, sorts them by
-   * the length of the common substring (starting from the beginning).
+   * the length of the longest common prefix in the path or the title,
+   * depending on whether the domain is special.
    * @return [{title, uri, id, weight}, ...].
    */
-  getRelatedBookmarks: function(url) {
+  getRelatedBookmarks: function(url, title) {
     let domain = this.DOMAIN_REGEX.exec(url)[1],
-        altDomain = /^www\./.test(domain) ? domain.slice(4) : "www." + domain;
+        altDomain = /^www\./.test(domain) ? domain.slice(4) : "www." + domain,
+        isSpecial = this.isDomainSpecial(domain);
     let lst = this.getBookmarksOn(domain).concat(this.getBookmarksOn(altDomain));
-    lst.forEach(function(item) item.weight = bm.matchWeight(url, item.uri));
+    lst.forEach(function(item) {
+      if (isSpecial) {
+        item.weight = bm.matchWeight(title, item.title);
+      } else {
+        item.weight = bm.matchWeight(url, item.uri, true);
+      }
+    });
     lst.sort(function(a, b) b.weight - a.weight); // better matches first
     return lst;
   },
@@ -76,9 +84,17 @@ let bm = {
     return lst;
   },
 
-  matchWeight: function(u, v) {
-    u = this.urlPath(u);
-    v = this.urlPath(v);
+  isDomainSpecial: function(domain) {
+    return getPref(PREF_SPECIAL_DOMAINS).split(/, */).some(function(d) {
+      return new RegExp("(^|\\.)" + d.replace(/\./, "\\."), "i").test(domain);
+    });
+  },
+
+  matchWeight: function(u, v, comparePaths) {
+    if (comparePaths) {
+      u = this.urlPath(u);
+      v = this.urlPath(v);
+    }
     let max = Math.min(u.length, v.length);
     for (var i = 0; i < max && u[i] == v[i]; ++i) {}
     return i;

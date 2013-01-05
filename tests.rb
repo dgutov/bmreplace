@@ -8,15 +8,14 @@ class Net::Telnet;
   end
 end
 
-files = Dir['content/*.js'] + Dir['includes/prefs.js'] +
-  Dir['tests/init.js'] + Dir['tests/*_test.js']
+files = Dir['content/*.js'] + Dir['tests/init.js'] + Dir['tests/*_test.js']
 
 telnet = Net::Telnet::new('Host' => 'localhost', 'Port' => 4242) # MozRepl
 
 files.map(&File.method(:new)).each do |file|
   #puts "Sending #{file.path}"
   s = telnet.mozcmd file.read
-  #puts s
+  puts s
 end
 
 puts "Launching tests"

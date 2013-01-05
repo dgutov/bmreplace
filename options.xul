@@ -23,4 +23,6 @@
       <radio value="accel,shift" label="Ctrl+Shift"/>
     </radiogroup>
   </setting>
+  <setting type="string" pref="extensions.bmreplace.special-domains"
+           title="&special.domains;" />
 </vbox>
