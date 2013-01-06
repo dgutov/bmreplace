@@ -67,6 +67,26 @@ test("getRelatedBookmarks on a special domain", function() {
   assertRelatedBookmarks([urls[1], urls[0], urls[2]], url, "aaa");
 });
 
+test("getRelatedBookmarks special looks at all substrings", function() {
+  let urls = ["/a/e", "/a/b/", "/b/b", "/a/e/c"]
+        .map(function(path) "http://youtube.com" + path),
+      url = urls.pop();
+  urls.forEach(function(url, index) {
+    addBookmark(url, ["tttab", "ttaa", "tc"][index]);
+  });
+  assertRelatedBookmarks([urls[1], urls[0], urls[2]], url, "zzzaaa");
+});
+
+test("getRelatedBookmarks special gives priority to prefix match", function() {
+  let urls = ["/a/e", "/a/b/", "/b/b", "/a/e/c"]
+        .map(function(path) "http://youtube.com" + path),
+      url = urls.pop();
+  urls.forEach(function(url, index) {
+    addBookmark(url, ["tttaaaaa", "zzaa", "tc"][index]);
+  });
+  assertRelatedBookmarks([urls[1], urls[0], urls[2]], url, "zzzaaaaaa");
+});
+
 test("shows candidates with www subdomain added or stripped", function() {
   let urls = ["http://abc.com/a/a", "http://www.abc.com/a/a"];
   urls.forEach(addBookmark);

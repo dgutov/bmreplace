@@ -39,7 +39,7 @@ let bm = {
 
   /**
    * Finds bookmarks related to the given url, sorts them by
-   * the length of the longest common prefix in the path or the title,
+   * the length of the longest common prefix in the path or title similarity,
    * depending on whether the domain is special.
    * @return [{title, uri, id, weight}, ...].
    */
@@ -97,12 +97,52 @@ let bm = {
     }
     let max = Math.min(u.length, v.length);
     for (var i = 0; i < max && u[i] == v[i]; ++i) {}
+
+    if (i == 0 && !comparePaths) {
+      i = this.longestCommonSubstring(u, v) / 3;
+    }
+
     return i;
   },
 
   urlPath: function(url) {
     let match = this.DOMAIN_REGEX.exec(url);
     return url.slice(match.index + match[0].length);
+  },
+
+  /**
+   * http://en.wikibooks.org/wiki/Algorithm_implementation
+   *   /Strings/Longest_common_substring#JavaScript
+   */
+  longestCommonSubstring: function(string1, string2) {
+    // init max value
+    var longestCommonSubstring = 0;
+    // init 2D array with 0
+    var table = Array(string1.length);
+    for (let a = 0; a <= string1.length; a++) {
+      table[a] = Array(string2.length);
+      for (let b = 0; b <= string2.length; b++) {
+        table[a][b] = 0;
+      }
+    }
+    // fill table
+    for (let i = 0; i < string1.length; i++) {
+      for (let j = 0; j < string2.length; j++) {
+        if (string1[i] == string2[j]) {
+          if (table[i][j] == 0) {
+            table[i+1][j+1] = 1;
+          } else {
+            table[i+1][j+1] = table[i][j] + 1;
+          }
+          if (table[i+1][j+1] > longestCommonSubstring) {
+            longestCommonSubstring = table[i+1][j+1];
+          }
+        } else {
+          table[i+1][j+1] = 0;
+        }
+      }
+    }
+    return longestCommonSubstring;
   },
 
   /**
