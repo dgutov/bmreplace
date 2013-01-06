@@ -115,9 +115,8 @@ let bm = {
    *   /Strings/Longest_common_substring#JavaScript
    */
   longestCommonSubstring: function(string1, string2) {
-    // init max value
     var longestCommonSubstring = 0;
-    // init 2D array with 0
+    /* init 2D array with 0 */
     var table = Array(string1.length);
     for (let a = 0; a <= string1.length; a++) {
       table[a] = Array(string2.length);
@@ -125,7 +124,7 @@ let bm = {
         table[a][b] = 0;
       }
     }
-    // fill table
+    /* fill table */
     for (let i = 0; i < string1.length; i++) {
       for (let j = 0; j < string2.length; j++) {
         if (string1[i] == string2[j]) {
