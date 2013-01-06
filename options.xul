@@ -24,5 +24,7 @@
     </radiogroup>
   </setting>
   <setting type="string" pref="extensions.bmreplace.special-domains"
-           title="&special.domains;" />
+           title="&special.domains;" multiline="true">
+    &special.domains.text;
+  </setting>
 </vbox>

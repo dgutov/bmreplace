@@ -4,9 +4,9 @@ existing bookmark with a bookmark of current page.
 Can be useful for reading and tracking progress in series of articles,
 webcomics, serial online fiction, etc.
 
-When you click on the icon (or use the hotkey, Ctrl+Alt+D), it builds a list of
-bookmarks from the same domain as the current URL, sorts them by similarity,
-and gives you a prompt to choose.
+When you click on the icon (or use the hotkey), it builds a list of bookmarks
+from the same domain as the current URL, sorts them by similarity, and gives you
+a prompt to choose.
 The new bookmark retains the folder, position, and all tags of the old one.
 
 If you check "Keep the old title", the previous title will also be carried over
