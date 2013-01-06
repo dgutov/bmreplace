@@ -168,8 +168,7 @@ function startup(data, reason) {
   watchWindows(modify, "navigator:browser");
 
   let optionsObserver = makeOptionsObserver(data.id),
-      branch = Services.prefs.getBranch(PREF_BRANCH)
-        .QueryInterface(Ci.nsIPrefBranch2);
+      branch = Services.prefs.getBranch(PREF_BRANCH);
 
   branch.addObserver("", prefsObserver, false);
   Services.obs.addObserver(optionsObserver, "addon-options-displayed", false);
