@@ -1,5 +1,7 @@
 "use strict";
 
+Cu.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
+
 let prompts = Services.prompt,
     prefs = Services.prefs,
     ww = Services.ww;
@@ -85,7 +87,8 @@ let main = {
       }
       bm.replaceBookmark(bookmark.id, url, !checked && doc.title,
                          getPref(PREF_DESCRIPTION) &&
-                         PlacesUIUtils.getDescriptionFromDocument(doc));
+                         PlacesUIUtils.getDescriptionFromDocument(doc),
+                         PrivateBrowsingUtils.isWindowPrivate(window));
     } else if (addNew) {
       bm.showAddBookmark(url, doc.title, window);
     }

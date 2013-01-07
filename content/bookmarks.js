@@ -152,8 +152,9 @@ let bm = {
    * @param url URL string.
    * @param title New title. Optional.
    * @param description New description. Optional.
+   * @param usePrivateBrowsing If true, the window is in private browsing mode.
    */
-  replaceBookmark: function(id, url, title, description) {
+  replaceBookmark: function(id, url, title, description, usePrivateBrowsing) {
     let oldUri = bms.getBookmarkURI(id),
         tags = ts.getTagsForURI(oldUri, {}),
         uri = ios.newURI(url, null, null);
@@ -167,9 +168,15 @@ let bm = {
       this.setDescription(id, description);
     }
     try {
-      let favUri = fs.getFaviconForPage(oldUri);
-      fs.setAndLoadFaviconForPage(uri, favUri, false);
-    } catch (e) {/*NS_ERROR_NOT_AVAILABLE*/}
+      let favUri = fs.getFaviconForPage(oldUri),
+          loadType = usePrivateBrowsing ?
+            fs.FAVICON_LOAD_PRIVATE : fs.FAVICON_LOAD_NON_PRIVATE;
+      fs.setAndLoadFaviconForPage(uri, favUri, false, loadType);
+    } catch (e) {
+      if (e.name != "NS_ERROR_NOT_AVAILABLE") {
+        throw e;
+      }
+    }
   },
 
   firstBookmarkFor: function(url) {
