@@ -1,0 +1,9 @@
+<!ENTITY menu.item.title "Menüpont hozzáadása">
+<!ENTITY update.description.title "Frissítse a könyvjelző leírását">
+<!ENTITY old.name.title "A régi nevet tartsa meg alapértelmezettként">
+<!ENTITY no.prompt.if.one "1 db egyezés esetén cseréljen kérdés nélkül">
+<!ENTITY shortcut.key "Gyorsbillentyű betűjele">
+<!ENTITY shortcut.modifiers "Gyorsbillentyű módosítói">
+<!ENTITY special.domains "Speciális domain-ek">
+<!ENTITY special.domains.text "Ezen oldalak látogatásakor a találatok névhasonlóság szerint rendeződnek (webcímek helyett).
+A domainneveket vesszővel kell elválasztani egymástól.">
