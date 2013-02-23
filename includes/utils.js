@@ -20,6 +20,7 @@
  * Contributor(s):
  *   Edward Lee <edilee@mozilla.com>
  *   Erik Vold <erikvvold@gmail.com>
+ *   Michael Kraft <morac99-firefox2@yahoo.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -144,12 +145,13 @@ function unload(callback, container) {
   // The callback is bound to the lifetime of the container if we have one
   if (container != null) {
     // Remove the unloader when the container unloads
-    container.addEventListener("unload", removeUnloader, false);
+    container.addEventListener("unload", unloader, false);
 
     // Wrap the callback to additionally remove the unload listener
     let origCallback = callback;
     callback = function() {
-      container.removeEventListener("unload", removeUnloader, false);
+      container.removeEventListener("unload", unloader, false);
+      removeUnloader();
       origCallback();
     }
   }
