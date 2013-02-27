@@ -5,7 +5,7 @@ Cu.import("resource:///modules/PlacesUIUtils.jsm");
 let bms = Cc["@mozilla.org/browser/nav-bookmarks-service;1"]
       .getService(Ci.nsINavBookmarksService);
 let fs = Cc["@mozilla.org/browser/favicon-service;1"]
-      .getService(Ci.nsIFaviconService);
+      .getService(Ci.mozIAsyncFavicons);
 let hs = Cc["@mozilla.org/browser/nav-history-service;1"]
       .getService(Ci.nsINavHistoryService);
 let ts = Cc["@mozilla.org/browser/tagging-service;1"]
@@ -168,10 +168,13 @@ let bm = {
       this.setDescription(id, description);
     }
     try {
-      let favUri = fs.getFaviconForPage(oldUri),
-          loadType = usePrivateBrowsing ?
+      let loadType = usePrivateBrowsing ?
             fs.FAVICON_LOAD_PRIVATE : fs.FAVICON_LOAD_NON_PRIVATE;
-      fs.setAndLoadFaviconForPage(uri, favUri, false, loadType);
+      fs.getFaviconURLForPage(oldUri, {
+        onComplete: function(favUri) {
+          fs.setAndFetchFaviconForPage(uri, favUri, false, loadType);
+        }
+      });
     } catch (e) {
       if (e.name != "NS_ERROR_NOT_AVAILABLE") {
         throw e;
