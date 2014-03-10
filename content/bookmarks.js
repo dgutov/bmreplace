@@ -44,7 +44,7 @@ let bm = {
    * @return [{title, uri, id, weight}, ...].
    */
   getRelatedBookmarks: function(url, title) {
-    let domain = this.DOMAIN_REGEX.exec(url)[1],
+    let domain = this.getDomain(url),
         altDomain = /^www\./.test(domain) ? domain.slice(4) : "www." + domain,
         isSpecial = this.isDomainSpecial(domain);
     let lst = this.getBookmarksOn(domain).concat(this.getBookmarksOn(altDomain));
@@ -57,6 +57,10 @@ let bm = {
     });
     lst.sort(function(a, b) b.weight - a.weight); // better matches first
     return lst;
+  },
+
+  getDomain: function(url) {
+    return this.DOMAIN_REGEX.exec(url)[1];
   },
 
   getBookmarksOn: function(domain) {

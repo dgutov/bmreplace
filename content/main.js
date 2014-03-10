@@ -73,7 +73,7 @@ let main = {
       checked = states[0], idx = 0, ok = true;
     } else {
       let result = {};
-      ok = main.select(window, title, _("selectBookmark"), titles.length,
+      ok = main.select(window, title, _("selectBookmark"), bm.getDomain(url),
                        titles, states, result);
       checked = result.checked;
       idx = result.value;
@@ -94,7 +94,7 @@ let main = {
     }
   },
 
-  select: function(window, title, text, count, options, states, result) {
+  select: function(window, title, text, domain, options, states, result) {
     function modifySelect(subject, topic) {
       if (topic == "domwindowopened") {
         ww.unregisterNotification(modifySelect);
@@ -117,6 +117,9 @@ let main = {
           vbox.parentNode.setAttribute("flex", "1");
           vbox.parentNode.style.width = "26em";
           window.sizeToContent();
+
+          list.setAttribute("data-addon", "bmreplace");
+          list.setAttribute("data-domain", domain);
 
           let updateChecked = function() {
             result.checked = cb.checked;
