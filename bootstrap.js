@@ -165,9 +165,11 @@ function startup(data, reason) {
   l10n(addon, "bmr.properties");
   unload(l10n.unload);
 
+  let branch = Services.prefs.getBranch(PREF_BRANCH);
+
   if (ADDON_INSTALL == reason) {
     setDefaultPosition(BUTTON_ID, "nav-bar", "bookmarks-menu-button-container");
-    main.setLastVersion(data.version);
+    branch.setCharPref(PREF_VERSION, data.version);
   };
 
   if (ADDON_UPGRADE == reason) {
@@ -178,8 +180,7 @@ function startup(data, reason) {
 
   watchWindows(modify, "navigator:browser");
 
-  let optionsObserver = makeOptionsObserver(data.id),
-      branch = Services.prefs.getBranch(PREF_BRANCH);
+  let optionsObserver = makeOptionsObserver(data.id);
 
   branch.addObserver("", prefsObserver, false);
   Services.obs.addObserver(optionsObserver, "addon-options-displayed", false);
