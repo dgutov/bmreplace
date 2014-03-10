@@ -168,7 +168,7 @@ function startup(data, reason) {
   let branch = Services.prefs.getBranch(PREF_BRANCH);
 
   if (ADDON_INSTALL == reason) {
-    setDefaultPosition(BUTTON_ID, "nav-bar", "bookmarks-menu-button-container");
+    setDefaultPosition(BUTTON_ID, "nav-bar", "downloads-button");
     branch.setCharPref(PREF_VERSION, data.version);
   };
 
