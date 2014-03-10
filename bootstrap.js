@@ -106,13 +106,18 @@ function modify(window) {
 function appendKeyset(doc, win) {
   let keyset = doc.createElement("keyset");
   keyset.setAttribute("id", KEYSET_ID);
-  let replaceKey = doc.createElement("key");
-  replaceKey.setAttribute("id", KEY_ID);
-  replaceKey.setAttribute("key", getPref(PREF_SHORTCUT_KEY));
-  replaceKey.setAttribute("modifiers", getPref(PREF_SHORTCUT_MODIFIERS));
-  replaceKey.setAttribute("oncommand", "void(0);");
-  replaceKey.addEventListener("command", main.action, true);
-  keyset.appendChild(replaceKey);
+  let shortcut = getPref(PREF_SHORTCUT_KEY);
+
+  if (shortcut) {
+    let replaceKey = doc.createElement("key");
+    replaceKey.setAttribute("id", KEY_ID);
+    replaceKey.setAttribute("key", shortcut);
+    replaceKey.setAttribute("modifiers", getPref(PREF_SHORTCUT_MODIFIERS));
+    replaceKey.setAttribute("oncommand", "void(0);");
+    replaceKey.addEventListener("command", main.action, true);
+    keyset.appendChild(replaceKey);
+  }
+
   win.appendChild(keyset);
   return keyset;
 }
@@ -126,7 +131,13 @@ function makeOptionsObserver (id) {
         if (menulist.childNodes.length == 0) {
           let popup = doc.createElement("menupopup"),
               a = "a".charCodeAt(0),
-              z = "z".charCodeAt(0);
+              z = "z".charCodeAt(0),
+              none = doc.createElement("menuitem");
+
+          none.setAttribute("value", "");
+          none.setAttribute("label", "None");
+          popup.appendChild(none);
+
           for (let c = a; c <= z; c++) {
             let item = doc.createElement("menuitem"),
                 s = String.fromCharCode(c);
