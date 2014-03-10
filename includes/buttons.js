@@ -54,7 +54,7 @@
         toolbars = $("toolbar", true);
     for (let i = 0; i < toolbars.length; ++i) {
       let tb = toolbars[i];
-      currentset = tb.getAttribute("currentset").split(","),
+      currentset = getCurrentset(tb),
       idx = currentset.indexOf(button.id);
       if (idx != -1) {
         toolbar = tb;
@@ -86,7 +86,7 @@
   };
   
   function persist(document, toolbar, buttonID, beforeID) {
-    let currentset = toolbar.getAttribute("currentset").split(","),
+    let currentset = getCurrentset(toolbar),
         idx = (beforeID && currentset.indexOf(beforeID)) || -1;
     if (idx != -1) {
       currentset.splice(idx, 0, buttonID);
@@ -96,5 +96,10 @@
     toolbar.setAttribute("currentset", currentset.join(","));
     document.persist(toolbar.id, "currentset");
     return [currentset, idx];
+  }
+
+  function getCurrentset(toolbar) {
+    return (toolbar.getAttribute("currentset") ||
+            toolbar.getAttribute("defaultset")).split(",");
   }
 })(this);
