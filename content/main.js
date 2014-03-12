@@ -66,15 +66,14 @@ let main = {
     }
 
     let titles = [b.title for each (b in bookmarks)],
-        states = [b.checked for each (b in bookmarks)],
         checked, idx, addNew, ok;
 
     if (titles.length == 1 && getPref(PREF_ONE_NO_PROMPT)) {
-      checked = states[0], idx = 0, ok = true;
+      checked = bookmarks[0].checked, idx = 0, ok = true;
     } else {
       let result = {};
       ok = main.select(window, title, _("selectBookmark"), bm.getDomain(url),
-                       titles, states, result);
+                       titles, bookmarks, result);
       checked = result.checked;
       idx = result.value;
       addNew = result.addNew;
@@ -82,7 +81,7 @@ let main = {
 
     if (ok) {
       let bookmark = bookmarks[idx];
-      if (checked != states[idx]) {
+      if (checked != bookmark.checked) {
         bm.setKeepTitle(bookmark.id, checked);
       }
       bm.replaceBookmark(bookmark.id, url, !checked && doc.title,
@@ -94,7 +93,7 @@ let main = {
     }
   },
 
-  select: function(window, title, text, domain, options, states, result) {
+  select: function(window, title, text, domain, options, attributes, result) {
     function modifySelect(subject, topic) {
       if (topic == "domwindowopened") {
         ww.unregisterNotification(modifySelect);
@@ -121,6 +120,14 @@ let main = {
           list.setAttribute("data-addon", "bmreplace");
           list.setAttribute("data-domain", domain);
 
+          // The list is populated in another onload listener.
+          window.setTimeout(function() {
+            for (let i = 0, length = list.getRowCount(); i < length; ++i) {
+              list.getItemAtIndex(i)
+                .setAttribute("tooltiptext", attributes[i].uri);
+            }
+          }, 10);
+
           let updateChecked = function() {
             result.checked = cb.checked;
           };
@@ -129,7 +136,7 @@ let main = {
           dialog.addEventListener("dialogaccept", updateChecked, false);
 
           list.addEventListener("select", function() {
-            cb.checked = states[list.selectedIndex];
+            cb.checked = attributes[list.selectedIndex].checked;
           }, false);
 
           extra2.addEventListener("command", function() {
