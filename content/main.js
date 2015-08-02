@@ -15,6 +15,8 @@ const PREF_BRANCH = "extensions.bmreplace.",
       PREF_SHORTCUT_KEY = "shortcut-key",
       PREF_SHORTCUT_MODIFIERS = "shortcut-modifiers",
       PREF_SPECIAL_DOMAINS = "special-domains",
+      PREF_DIALOG_WIDTH = "dialog.width",
+      PREF_DIALOG_ROWS  = "dialog.rows",
       PREFS = {},
       BUTTON_ID = "bmreplace-button",
       KEYSET_ID = "bmreplace-keyset",
@@ -28,6 +30,8 @@ PREFS[PREF_ONE_NO_PROMPT] = false;
 PREFS[PREF_SHORTCUT_KEY]       = "d";
 PREFS[PREF_SHORTCUT_MODIFIERS] = "shift,alt";
 PREFS[PREF_SPECIAL_DOMAINS] = "youtube.com,vimeo.com,blip.tv";
+PREFS[PREF_DIALOG_WIDTH]  = 26;
+PREFS[PREF_DIALOG_ROWS]   = 7;
 
 let main = {
   action: function() {
@@ -104,17 +108,21 @@ let main = {
               cb = doc.createElement("checkbox"),
               list = $(doc, "list"),
               vbox = list.parentNode,
-              extra2 = dialog.getButton("extra2");
+              extra2 = dialog.getButton("extra2"),
+              width = getPref(PREF_DIALOG_WIDTH),
+              rows  = getPref(PREF_DIALOG_ROWS);
 
           cb.setAttribute("label", _("keepOldTitle"));
           vbox.appendChild(cb);
           extra2.hidden = false;
           extra2.label = _("newBookmark");
           extra2.parentNode.querySelector("spacer").hidden = false;
-          list.setAttribute("rows", 7);
+          list.setAttribute("rows", rows);
           vbox.setAttribute("flex", "1");
           vbox.parentNode.setAttribute("flex", "1");
-          vbox.parentNode.style.width = "26em";
+
+          vbox.parentNode.style.width = width + "em";
+
           window.sizeToContent();
 
           list.setAttribute("data-addon", "bmreplace");

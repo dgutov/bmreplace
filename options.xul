@@ -27,4 +27,8 @@
            title="&special.domains;" multiline="true">
     &special.domains.text;
   </setting>
+  <setting type="integer" pref="extensions.bmreplace.dialog.width"
+           title="&dialog.width;" />
+  <setting type="integer" pref="extensions.bmreplace.dialog.rows"
+           title="&dialog.rows;" />
 </vbox>

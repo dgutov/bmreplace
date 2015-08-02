@@ -55,6 +55,8 @@ function getPref(key, aDefault) {
       return getPref.branch.getBoolPref(key);
     case "string":
       return getPref.branch.getCharPref(key);
+    case "number":
+      return getPref.branch.getIntPref(key);
   }
   return null;
 }
@@ -72,6 +74,9 @@ function setDefaultPrefs() {
         break;
       case "string":
         branch.setCharPref(key, val);
+        break;
+      case "number":
+        branch.setIntPref(key, val);
         break;
     }
   }

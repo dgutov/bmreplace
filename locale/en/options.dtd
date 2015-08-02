@@ -7,3 +7,5 @@
 <!ENTITY special.domains "Special domains">
 <!ENTITY special.domains.text "When visiting a webpage on one of these domains, the candidates will be sorted according to their name similarity, instead of URLs.
 The domains should be separated with commas.">
+<!ENTITY dialog.width "Width of the dialog window (in ems)">
+<!ENTITY dialog.rows "Number of visible rows in the list">
