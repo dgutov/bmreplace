@@ -69,7 +69,7 @@ let main = {
       return;
     }
 
-    let titles = [b.title for each (b in bookmarks)],
+    let titles = bookmarks.map((b) => b.title),
         checked, idx, addNew, ok;
 
     if (titles.length == 1 && getPref(PREF_ONE_NO_PROMPT)) {
