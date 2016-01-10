@@ -55,7 +55,7 @@ let bm = {
         item.weight = bm.matchWeight(url, item.uri, true);
       }
     });
-    lst.sort(function(a, b) b.weight - a.weight); // better matches first
+    lst.sort((a, b) => b.weight - a.weight); // better matches first
     return lst;
   },
 

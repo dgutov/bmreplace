@@ -111,7 +111,7 @@ function watchWindows(callback, winType) {
   Services.ww.registerNotification(windowWatcher);
 
   // Make sure to stop watching for windows if we're unloading
-  unload(function() Services.ww.unregisterNotification(windowWatcher));
+  unload(() => Services.ww.unregisterNotification(windowWatcher));
 }
 
 /**
@@ -137,7 +137,7 @@ function unload(callback, container) {
 
   // Calling with no arguments runs all the unloader callbacks
   if (callback == null) {
-    unloaders.slice().forEach(function(unloader) unloader());
+    unloaders.slice().forEach((unloader) => unloader());
     unloaders.length = 0;
     return;
   }

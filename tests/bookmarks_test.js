@@ -2,13 +2,13 @@ function addBookmark(url, title) {
   let uri = ios.newURI(url, null, null),
       id = bms.insertBookmark(bms.unfiledBookmarksFolder, uri,
                               bms.DEFAULT_INDEX, title);
-  undo(function() bms.removeItem(id));
+  undo(() => bms.removeItem(id));
   return id;
 }
 
 function assertRelatedBookmarks(expected, url, title) {
   assertArraysEqual(expected,
-                    bm.getRelatedBookmarks(url, title).map(function(b) b.uri));
+                    bm.getRelatedBookmarks(url, title).map((b) => b.uri));
 }
 
 test("isBookmarked", function() {
@@ -49,7 +49,7 @@ test("isDomainSpecial myyoutube", function() {
 
 test("getRelatedBookmarks", function() {
   let urls = ["/a/e", "/a/b/", "/b/b", "/a/b/c"]
-        .map(function(path) "http://abc.com" + path),
+        .map((path) => "http://abc.com" + path),
       url = urls.pop();
   urls.forEach(function(url, index) {
     addBookmark(url, ["a", "b", "c"][index]);
@@ -59,7 +59,7 @@ test("getRelatedBookmarks", function() {
 
 test("getRelatedBookmarks on a special domain", function() {
   let urls = ["/a/e", "/a/b/", "/b/b", "/a/e/c"]
-        .map(function(path) "http://youtube.com" + path),
+        .map((path) => "http://youtube.com" + path),
       url = urls.pop();
   urls.forEach(function(url, index) {
     addBookmark(url, ["ab", "aa", "c"][index]);
@@ -69,7 +69,7 @@ test("getRelatedBookmarks on a special domain", function() {
 
 test("getRelatedBookmarks special looks at all substrings", function() {
   let urls = ["/a/e", "/a/b/", "/b/b", "/a/e/c"]
-        .map(function(path) "http://youtube.com" + path),
+        .map((path) => "http://youtube.com" + path),
       url = urls.pop();
   urls.forEach(function(url, index) {
     addBookmark(url, ["tttab", "ttaa", "tc"][index]);
@@ -79,7 +79,7 @@ test("getRelatedBookmarks special looks at all substrings", function() {
 
 test("getRelatedBookmarks special gives priority to prefix match", function() {
   let urls = ["/a/e", "/a/b/", "/b/b", "/a/e/c"]
-        .map(function(path) "http://youtube.com" + path),
+        .map((path) => "http://youtube.com" + path),
       url = urls.pop();
   urls.forEach(function(url, index) {
     addBookmark(url, ["tttaaaaa", "zzaa", "tc"][index]);
