@@ -1,6 +1,7 @@
 Cu.import("resource://gre/modules/Services.jsm");
+Cu.import("resource://gre/modules/Timer.jsm");
 
-let tests = {},
+var tests = {},
     total = 0, successful = 0,
     errors = {},
     undos = [];
@@ -57,4 +58,20 @@ function undo(func) {
 
 function getPref(key) {
   return PREFS[key];
+}
+
+function runIn(msecs, func) {
+  let timeoutID = setTimeout(
+    function() {
+      func();
+      clearTimeout(timeoutID);
+    },
+    msecs);
+}
+
+function waitFor(msecs) {
+  let done = false;
+  runIn(msecs, function() {done = true;});
+  let thread = Cc["@mozilla.org/thread-manager;1"].getService().currentThread;
+  while (!done) thread.processNextEvent(true);
 }
