@@ -1,6 +1,7 @@
 "use strict";
 
 Cu.import("resource:///modules/PlacesUIUtils.jsm");
+//Cu.import('resource://gre/modules/devtools/Console.jsm');
 
 let bms = Cc["@mozilla.org/browser/nav-bookmarks-service;1"]
       .getService(Ci.nsINavBookmarksService);
@@ -151,7 +152,7 @@ let bm = {
   /**
    * Replaces bookmark's title and URL with new ones.
    * Retains the folder, bookmark's position in it, and
-   * moves the tags from the old URI to the new one.
+   * moves the tags and keywords from the old URI to the new one.
    * @param id Bookmark ID.
    * @param url URL string.
    * @param title New title. Optional.
@@ -171,6 +172,9 @@ let bm = {
     if (description) {
       this.setDescription(id, description);
     }
+    this.forEachKeyword(oldUri.spec, function(kwd) {
+      bm.setKeywordUrl(kwd, url);
+    });
     try {
       let loadType = usePrivateBrowsing ?
             fs.FAVICON_LOAD_PRIVATE : fs.FAVICON_LOAD_NON_PRIVATE;
@@ -228,5 +232,16 @@ let bm = {
   setDescription: function(id, value) {
     as.setItemAnnotation(id, PlacesUIUtils.DESCRIPTION_ANNO, value,
                          0, Ci.nsIAnnotationService.EXPIRE_NEVER);
+  },
+
+  /**
+   * @returns Promise.
+   */
+  setKeywordUrl: function(kwd, url) {
+    return PlacesUtils.keywords.insert({keyword: kwd, url: url});
+  },
+
+  forEachKeyword: function(url, cb) {
+    PlacesUtils.keywords.fetch({url: url}, entry => { cb(entry.keyword); });
   }
 };

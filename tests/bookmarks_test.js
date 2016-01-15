@@ -108,6 +108,29 @@ test("replaceBookmark", function() {
   });
 });
 
+test("replaceBookmark moves keywords", function() {
+  let res = [], kwd1 = "foo", kwd2 = "bar",
+      url1 = "http://fff.com",
+      url2 = "http://eee.com";
+  bm.setKeywordUrl(kwd1, url1).then(function() {
+    bm.setKeywordUrl(kwd2, url1).then(function() {
+      let id = addBookmark(url1);
+      bm.replaceBookmark(id, url2, "zzz");
+      waitFor(100);
+      bm.forEachKeyword(url2, function(val) {
+        res.push(val);
+      });
+    });
+  });
+  undo(function() {
+    PlacesUtils.keywords.remove(kwd1);
+    PlacesUtils.keywords.remove(kwd2);
+  });
+  waitFor(100);
+  assertEqual(kwd1, res[0]);
+  assertEqual(kwd2, res[1]);
+});
+
 test("setDescription", function() {
   let id = addBookmark("http://bbb.ddd");
   assertEqual("", PlacesUIUtils.getItemDescription(id));
@@ -120,4 +143,27 @@ test("firstBookmarkFor", function() {
   assertEqual(null, bm.firstBookmarkFor(url));
   let id = addBookmark(url);
   assertEqual(id, bm.firstBookmarkFor(url));
+});
+
+test("setKeywordUrl", function() {
+  let url = "http://def.com",
+      kwd = "foo",
+      done = false;
+  bm.setKeywordUrl(kwd, url).then(function() { done = true; });
+  undo(function() { PlacesUtils.keywords.remove(kwd); });
+  waitFor(100);
+  assertEqual(true, done);
+});
+
+test("forEachKeyword", function() {
+  let res = [], url = "http://deff.com", kwd = "foo";
+  bm.setKeywordUrl(kwd, url).then(function() {
+    bm.forEachKeyword(url, function(val) {
+      res.push(val);
+    });
+  }, function() { res = "fail"; });
+  undo(function() { PlacesUtils.keywords.remove(kwd); });
+  waitFor(100);
+  assertEqual(1, res.length);
+  assertEqual(kwd, res[0]);
 });
