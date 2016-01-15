@@ -19,20 +19,24 @@ let bm = {
   DOMAIN_REGEX: /:\/\/([^/]*)/,
   KEEP_TITLE_ANN: "bmreplace/keep-title",
   WRONG_TITLE: 10,
+  WRONG_DESC: 20,
 
   /**
-   * Checks if there is a bookmark with given URL and title.
+   * Checks if there is a bookmark with given URL, title and description.
    * @param {String} url
    * @param {String} title
-   * @return true if both match, WRONG_TITLE if the title doesn't match.
+   * @param {String} description
+   * @return true if both match; WRONG_TITLE or WRONG_DESC otherwise.
    */
-  isBookmarked: function(url, title) {
+  isBookmarked: function(url, title, description) {
     let id = this.firstBookmarkFor(url);
     if (id) {
-      if (title == bms.getItemTitle(id)) {
-        return true;
-      } else {
+      if (!(title == bms.getItemTitle(id))) {
         return this.WRONG_TITLE;
+      } else if (description && !(description == PlacesUIUtils.getItemDescription(id))) {
+        return this.WRONG_DESC;
+      } else {
+        return true;
       }
     }
     return false;

@@ -38,18 +38,23 @@ let main = {
     let window = Services.wm.getMostRecentWindow("navigator:browser"),
         doc = window.content.document,
         url = doc.location.toString(),
-        title = _("label");
+        title = _("label"),
+        description = getPref(PREF_DESCRIPTION) && PlacesUIUtils.getDescriptionFromDocument(doc);
 
     if (!bm.DOMAIN_REGEX.test(url)) {
       prompts.alert(window, title, _("urlNotSupported"));
       return;
     }
 
-    let res = bm.isBookmarked(url, doc.title);
+    let res = bm.isBookmarked(url, doc.title, description);
     if (res) {
       if (res == bm.WRONG_TITLE) {
         if (prompts.confirm(window, title, _("updateTitle"))) {
           bm.setTitle(url, doc.title);
+        }
+      } else if (res == bm.WRONG_DESC) {
+        if (prompts.confirm(window, title, _("updateDesc"))) {
+          bm.setDescription(bm.firstBookmarkFor(url), description);
         }
       } else {
         prompts.alert(window, title, _("alreadyBookmarked"));
@@ -89,8 +94,7 @@ let main = {
         bm.setKeepTitle(bookmark.id, checked);
       }
       bm.replaceBookmark(bookmark.id, url, !checked && doc.title,
-                         getPref(PREF_DESCRIPTION) &&
-                         PlacesUIUtils.getDescriptionFromDocument(doc),
+                         description,
                          PrivateBrowsingUtils.isWindowPrivate(window));
     } else if (addNew) {
       bm.showAddBookmark(url, doc.title, window);

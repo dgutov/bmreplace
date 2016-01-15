@@ -14,9 +14,12 @@ function assertRelatedBookmarks(expected, url, title) {
 test("isBookmarked", function() {
   let url = "http://google.com/?q=zyzyx";
   assertFalse(bm.isBookmarked(url));
-  addBookmark(url, "Zyzyx!");
+  let id = addBookmark(url, "Zyzyx!");
+  bm.setDescription(id, "Aoaoau");
   assertEqual(bm.WRONG_TITLE, bm.isBookmarked(url));
+  assertEqual(bm.WRONG_DESC, bm.isBookmarked(url, "Zyzyx!", "Wipwip"));
   assertEqual(true, bm.isBookmarked(url, "Zyzyx!"));
+  assertEqual(true, bm.isBookmarked(url, "Zyzyx!", "Aoaoau"));
 });
 
 test("matchWeight comparePaths", function() {
