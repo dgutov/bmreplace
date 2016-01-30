@@ -1,6 +1,6 @@
 "use strict";
 
-Cu.import("resource:///modules/PlacesUIUtils.jsm");
+Cu.import("resource://app/modules/PlacesUIUtils.jsm");
 Cu.import("resource://gre/modules/PlacesUtils.jsm");
 //Cu.import('resource://gre/modules/devtools/Console.jsm');
 
