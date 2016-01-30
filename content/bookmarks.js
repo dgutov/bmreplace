@@ -1,6 +1,7 @@
 "use strict";
 
 Cu.import("resource:///modules/PlacesUIUtils.jsm");
+Cu.import("resource://gre/modules/PlacesUtils.jsm");
 //Cu.import('resource://gre/modules/devtools/Console.jsm');
 
 let bms = Cc["@mozilla.org/browser/nav-bookmarks-service;1"]
