@@ -43,8 +43,9 @@ var l10n = (function(global) {
 
   function l10n(addon, filename, defaultLocale) {
     defaultLocale = defaultLocale || "en";
-    function filepath(locale) addon
-        .getResourceURI("locale/" + locale + "/" + filename).spec
+    function filepath(locale) {
+      return addon.getResourceURI("locale/" + locale + "/" + filename).spec;
+    }
 
     let defaultBundle = Services.strings.createBundle(filepath(locale));
 

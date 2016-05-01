@@ -10,9 +10,9 @@ function include(path) {
 }
 
 var addon = {
-  getResourceURI: function(filePath) ({
-    spec: __SCRIPT_URI_SPEC__ + "/../" + filePath
-  })
+  getResourceURI: function(filePath) {
+    return {spec: __SCRIPT_URI_SPEC__ + "/../" + filePath};
+  }
 };
 
 function $(node, childId) {
@@ -191,7 +191,7 @@ function startup(data, reason) {
   });
 };
 
-function shutdown(data, reason) unload();
+function shutdown(data, reason) { unload(); };
 
 function install() {}
 
