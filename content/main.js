@@ -36,21 +36,30 @@ PREFS[PREF_DIALOG_ROWS]   = 7;
 let main = {
   action: function() {
     let window = Services.wm.getMostRecentWindow("navigator:browser"),
-        doc = window.content.document,
-        url = doc.location.toString(),
-        title = _("label"),
-        description = getPref(PREF_DESCRIPTION) && PlacesUIUtils.getDescriptionFromDocument(doc);
+        tabMM = window.gBrowser.selectedBrowser.messageManager,
+        listener = function({data}) {
+            tabMM.removeMessageListener("bmreplace:callback", listener);
+            main.doIt(window, data.url, data.title, data.description);
+        };
+    // https://developer.mozilla.org/en-US/Firefox/Multiprocess_Firefox/Message_Manager/Performance#Load_frame_scripts_on_demand
+    tabMM.addMessageListener("bmreplace:callback", listener);
+    tabMM.loadFrameScript("chrome://bmreplace/content/frame-script.js", true);
+  },
+
+  doIt: function(window, url, docTitle, docDescription) {
+    let title = _("label"),
+        description = getPref(PREF_DESCRIPTION) && docDescription;
 
     if (!bm.DOMAIN_REGEX.test(url)) {
       prompts.alert(window, title, _("urlNotSupported"));
       return;
     }
 
-    let res = bm.isBookmarked(url, doc.title, description);
+    let res = bm.isBookmarked(url, docTitle, description);
     if (res) {
       if (res == bm.WRONG_TITLE) {
         if (prompts.confirm(window, title, _("updateTitle"))) {
-          bm.setTitle(url, doc.title);
+          bm.setTitle(url, docTitle);
         }
       } else if (res == bm.WRONG_DESC) {
         if (prompts.confirm(window, title, _("updateDesc"))) {
@@ -62,14 +71,14 @@ let main = {
       return;
     }
 
-    let bookmarks = bm.getRelatedBookmarks(url, doc.title);
+    let bookmarks = bm.getRelatedBookmarks(url, docTitle);
     if (!bookmarks.length) {
       let btn = prompts.confirmEx(window, title, _("relatedNotFound"),
                                   prompts.STD_YES_NO_BUTTONS +
                                   prompts.BUTTON_POS_1_DEFAULT,
                                   "", "", null, null, {});
       if (btn == 0) {
-        bm.showAddBookmark(url, doc.title, window);
+        bm.showAddBookmark(url, docTitle, window);
       }
       return;
     }
@@ -93,11 +102,11 @@ let main = {
       if (checked != bookmark.checked) {
         bm.setKeepTitle(bookmark.id, checked);
       }
-      bm.replaceBookmark(bookmark.id, url, !checked && doc.title,
+      bm.replaceBookmark(bookmark.id, url, !checked && docTitle,
                          description,
                          PrivateBrowsingUtils.isWindowPrivate(window));
     } else if (addNew) {
-      bm.showAddBookmark(url, doc.title, window);
+      bm.showAddBookmark(url, docTitle, window);
     }
   },
 
