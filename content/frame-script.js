@@ -1,4 +1,4 @@
-Cu.import("resource://app/modules/PlacesUIUtils.jsm");
+Components.utils.import("resource://app/modules/PlacesUIUtils.jsm");
 
 let doc = content.document,
     description = PlacesUIUtils.getDescriptionFromDocument(doc),
