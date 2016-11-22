@@ -38,8 +38,8 @@ let main = {
     let window = Services.wm.getMostRecentWindow("navigator:browser"),
         tabMM = window.gBrowser.selectedBrowser.messageManager,
         listener = function({data}) {
-            tabMM.removeMessageListener("bmreplace:callback", listener);
-            main.doIt(window, data.url, data.title, data.description);
+          tabMM.removeMessageListener("bmreplace:callback", listener);
+          main.doIt(window, data.url, data.title, data.description);
         };
     // https://developer.mozilla.org/en-US/Firefox/Multiprocess_Firefox/Message_Manager/Performance#Load_frame_scripts_on_demand
     tabMM.addMessageListener("bmreplace:callback", listener);
