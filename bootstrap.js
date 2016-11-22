@@ -220,8 +220,8 @@ function upgrade(version) {
           .getService(Ci.nsINavBookmarksService),
         ts = Cc["@mozilla.org/browser/tagging-service;1"]
           .getService(Ci.nsITaggingService);
-    for each (let uri in ts.getURIsForTag(ktTag)) {
-      for each (let id in bms.getBookmarkIdsForURI(uri)) {
+    for (let uri of ts.getURIsForTag(ktTag)) {
+      for (let id of bms.getBookmarkIdsForURI(uri)) {
         bm.setKeepTitle(id, true);
       }
     }
