@@ -1,3 +1,6 @@
+/*global Components, Services, restorePosition, main, bm,
+  getPref, unload, watchWindows, __SCRIPT_URI_SPEC__, l10n,
+  setDefaultPosition, setDefaultPrefs */
 const {classes: Cc, interfaces: Ci, utils: Cu} = Components;
 
 Cu.import("resource://gre/modules/Services.jsm");
