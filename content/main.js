@@ -1,3 +1,4 @@
+/*global Cu, Services, getPref, bm, PrivateBrowsingUtils */
 "use strict";
 
 Cu.import("resource://gre/modules/PrivateBrowsingUtils.jsm");

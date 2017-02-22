@@ -1,3 +1,4 @@
+/*global Cc, Ci, Cu, Services, PlacesUIUtils, getPref */
 "use strict";
 
 Cu.import("resource://app/modules/PlacesUIUtils.jsm");
