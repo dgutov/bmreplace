@@ -169,8 +169,10 @@ let bm = {
     let oldUri = bms.getBookmarkURI(id),
         tags = ts.getTagsForURI(oldUri, {}),
         uri = ios.newURI(url, null, null);
-    ts.tagURI(uri, tags);
-    ts.untagURI(oldUri, tags);
+    if (tags && tags.length > 0) {
+      ts.tagURI(uri, tags);
+      ts.untagURI(oldUri, tags);
+    }
     bms.changeBookmarkURI(id, uri);
     if (title) {
       bms.setItemTitle(id, title);
