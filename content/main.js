@@ -40,11 +40,35 @@ let main = {
         tabMM = window.gBrowser.selectedBrowser.messageManager,
         listener = function({data}) {
           tabMM.removeMessageListener("bmreplace:callback", listener);
+          // console.log(data);
           main.doIt(window, data.url, data.title, data.description);
         };
     // https://developer.mozilla.org/en-US/Firefox/Multiprocess_Firefox/Message_Manager/Performance#Load_frame_scripts_on_demand
-    tabMM.addMessageListener("bmreplace:callback", listener);
     tabMM.loadFrameScript("chrome://bmreplace/content/frame-script.js", true);
+    tabMM.addMessageListener("bmreplace:callback", listener);
+
+    tabMM.loadFrameScript("data:text/javascript,(" + function() {
+      function getDescriptionFromDocument(doc) {
+        var metaElements = doc.getElementsByTagName("META");
+        for (var i = 0; i < metaElements.length; ++i) {
+          if (metaElements[i].name.toLowerCase() == "description" ||
+              metaElements[i].httpEquiv.toLowerCase() == "description") {
+            return metaElements[i].content;
+          }
+        }
+        return "";
+      }
+
+      let doc = content.document,
+          description = getDescriptionFromDocument(doc),
+          data = {
+            url: doc.location.toString(),
+            title: doc.title,
+            description: description
+          };
+
+      sendAsyncMessage("bmreplace:callback", data);
+    } + ")()", true);
   },
 
   doIt: function(window, url, docTitle, docDescription) {

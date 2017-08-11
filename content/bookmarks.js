@@ -1,8 +1,11 @@
 /*global Cc, Ci, Cu, Services, PlacesUIUtils, getPref */
 "use strict";
 
-Cu.import("resource://app/modules/PlacesUIUtils.jsm");
-Cu.import("resource://gre/modules/PlacesUtils.jsm");
+Cu.import("resource://gre/modules/XPCOMUtils.jsm");
+XPCOMUtils.defineLazyModuleGetter(this, "PlacesUIUtils",
+                                  "resource:///modules/PlacesUIUtils.jsm");
+XPCOMUtils.defineLazyModuleGetter(this, "PlacesUtils",
+                                  "resource:///modules/PlacesUtils.jsm");
 //Cu.import('resource://gre/modules/devtools/Console.jsm');
 
 let bms = Cc["@mozilla.org/browser/nav-bookmarks-service;1"]
