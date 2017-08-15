@@ -44,7 +44,6 @@ let main = {
           main.doIt(window, data.url, data.title, data.description);
         };
     // https://developer.mozilla.org/en-US/Firefox/Multiprocess_Firefox/Message_Manager/Performance#Load_frame_scripts_on_demand
-    tabMM.loadFrameScript("chrome://bmreplace/content/frame-script.js", true);
     tabMM.addMessageListener("bmreplace:callback", listener);
 
     tabMM.loadFrameScript("data:text/javascript,(" + function() {
